@@ -33,9 +33,6 @@ FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /out/kromgo /kromgo
 EXPOSE 8080/tcp 8888/tcp
-LABEL \
-    org.opencontainers.image.title="kromgo" \
-    org.opencontainers.image.source="https://github.com/home-operations/kromgo"
 # Run as whatever UID you configure (k8s securityContext / docker --user); the
 # image pins no user.
 ENTRYPOINT ["/kromgo"]
