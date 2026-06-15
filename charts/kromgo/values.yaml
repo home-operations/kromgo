@@ -300,9 +300,9 @@ volumeMounts: []
 # Config for the chart's `helm test` hook (a pod that curls the Service's /readyz). Used only by `helm test`, never the workload.
 tests:
   image:
-    # -- `helm test` pod image; needs a shell with wget (kromgo's own image is from scratch).
-    repository: ghcr.io/home-operations/busybox
+    # -- `helm test` connection-pod image; a gcr-mirrored curl, so the test never pulls from Docker Hub.
+    repository: mirror.gcr.io/curlimages/curl
     # -- `helm test` image, pinned as `tag@sha256:digest` so Renovate bumps the tag and its digest together.
-    tag: "1.38.0@sha256:7e2c04dd50ede647bf4a7a4c8dbd629dd4971cd139b9b88fb22bfc3c7a6c13df"
+    tag: "8.20.0@sha256:b3f1fb2a51d923260350d21b8654bbc607164a987e2f7c84a0ac199a67df812a"
     # -- `helm test` image pull policy.
     pullPolicy: IfNotPresent

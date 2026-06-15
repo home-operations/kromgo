@@ -705,13 +705,13 @@
               "type": "string"
             },
             "repository": {
-              "default": "ghcr.io/home-operations/busybox",
-              "description": "`helm test` pod image; needs a shell with wget (kromgo's own image is from scratch).",
+              "default": "mirror.gcr.io/curlimages/curl",
+              "description": "`helm test` connection-pod image; a gcr-mirrored curl, so the test never pulls from Docker Hub.",
               "title": "repository",
               "type": "string"
             },
             "tag": {
-              "default": "1.38.0@sha256:7e2c04dd50ede647bf4a7a4c8dbd629dd4971cd139b9b88fb22bfc3c7a6c13df",
+              "default": "8.20.0@sha256:b3f1fb2a51d923260350d21b8654bbc607164a987e2f7c84a0ac199a67df812a",
               "description": "`helm test` image, pinned as `tag",
               "title": "tag",
               "type": "string"
