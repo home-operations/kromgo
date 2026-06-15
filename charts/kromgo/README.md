@@ -105,8 +105,8 @@ Kubernetes: `>=1.25.0-0`
 | serviceAccount.create | bool | `true` | Create a ServiceAccount. |
 | serviceAccount.name | string | `""` | ServiceAccount name; generated from the release name if empty. |
 | tests.image.pullPolicy | string | `"IfNotPresent"` | `helm test` image pull policy. |
-| tests.image.repository | string | `"ghcr.io/home-operations/busybox"` | `helm test` pod image; needs a shell with wget (kromgo's own image is from scratch). |
-| tests.image.tag | string | `"1.38.0@sha256:7e2c04dd50ede647bf4a7a4c8dbd629dd4971cd139b9b88fb22bfc3c7a6c13df"` | `helm test` image, pinned as `tag@sha256:digest` so Renovate bumps the tag and its digest together. |
+| tests.image.repository | string | `"mirror.gcr.io/curlimages/curl"` | `helm test` connection-pod image; a gcr-mirrored curl, so the test never pulls from Docker Hub. |
+| tests.image.tag | string | `"8.20.0@sha256:b3f1fb2a51d923260350d21b8654bbc607164a987e2f7c84a0ac199a67df812a"` | `helm test` image, pinned as `tag@sha256:digest` so Renovate bumps the tag and its digest together. |
 | tolerations | list | `[]` | Tolerations for pod scheduling. |
 | volumeMounts | list | `[]` | Additional volume mounts on the container. |
 | volumes | list | `[]` | Additional volumes on the Deployment. |
