@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.8](https://github.com/home-operations/kromgo/compare/0.14.7...0.14.8) (2026-06-15)
+
+
+### Miscellaneous Chores
+
+* **chart:** use the shared curl image for the helm test pod ([#253](https://github.com/home-operations/kromgo/issues/253)) ([e4601be](https://github.com/home-operations/kromgo/commit/e4601befef655f454982ff158b90089756072152))
+
 ## [0.14.7](https://github.com/home-operations/kromgo/compare/0.14.6...0.14.7) (2026-06-13)
 
 
