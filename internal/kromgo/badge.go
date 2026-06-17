@@ -411,30 +411,36 @@ func styleAppearance(style string) (rx int, gradStops string) {
 
 var hexColorRe = regexp.MustCompile(`^#[0-9a-fA-F]{3,8}$`)
 
+// The current shields.io named-color palette, so a directly-rendered kromgo badge is
+// the same color as the same badge served through shields.io.
 const (
-	colorBlue  = "#007ec6"
-	colorGreen = "#97ca00"
-	colorGrey  = "#9f9f9f"
-	labelBg    = "#555" // label-side (left) background; always dark, so its text is white
+	colorBlue        = "#007ec6"
+	colorGreen       = "#67ac09"
+	colorBrightGreen = "#4b0"
+	colorOrange      = "#ea7233"
+	colorRed         = "#dd4343"
+	colorGrey        = "#939393" // lightgrey/lightgray/inactive
+	labelBg          = "#555"    // label-side (left) background; always dark, so its text is white
 )
 
-// badgeColors maps shields.io color names to hex. "" is the default (blue).
+// badgeColors maps shields.io color names to hex (the current shields.io palette). ""
+// is the default (blue).
 var badgeColors = map[string]string{
 	"":              colorBlue,
 	"blue":          colorBlue,
-	"brightgreen":   "#4c1",
+	"brightgreen":   colorBrightGreen,
 	"green":         colorGreen,
-	"yellow":        "#dfb317",
-	"yellowgreen":   "#a4a61d",
-	"orange":        "#fe7d37",
-	"red":           "#e05d44",
+	"yellow":        "#d8b800",
+	"yellowgreen":   "#95991a",
+	"orange":        colorOrange,
+	"red":           colorRed,
 	"grey":          "#555",
 	"gray":          "#555",
 	"lightgrey":     colorGrey,
 	"lightgray":     colorGrey,
-	"success":       colorGreen,
-	"important":     "#fe7d37",
-	"critical":      "#e05d44",
+	"success":       colorBrightGreen, // shields: success == brightgreen
+	"important":     colorOrange,
+	"critical":      colorRed,
 	"informational": colorBlue,
 	"inactive":      colorGrey,
 }

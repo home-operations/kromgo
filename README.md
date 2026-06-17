@@ -247,7 +247,7 @@ fast rather than per request. Each expression receives two variables:
 
 - **`valueExpr`** must return a string — the message shown on the badge. Defaults to `string(result)`.
 - **`colorExpr`** must return a string — a [shields.io color name](https://shields.io) (`green`,
-  `orange`, `red`, `blue`, `grey`, …) or a hex value like `"#e05d44"`. Omit for no color.
+  `orange`, `red`, `blue`, `grey`, …) or a hex value like `"#dd4343"`. Omit for no color.
 
 Text color adapts to the background for legibility — dark text on light colors, white on dark — the
 same way shields.io does, so a light custom `colorExpr` stays readable. Every badge also carries
