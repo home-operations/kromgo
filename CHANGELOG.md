@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.14.9](https://github.com/home-operations/kromgo/compare/0.14.8...0.14.9) (2026-06-17)
+
+
+### Features
+
+* **badge:** add for-the-badge style ([#259](https://github.com/home-operations/kromgo/issues/259)) ([d15fe1f](https://github.com/home-operations/kromgo/commit/d15fe1f623c6084f93cd55b56b5e5ac782da78a7))
+* **deps:** update module github.com/prometheus/common (v0.68.1 → v0.69.0) ([#258](https://github.com/home-operations/kromgo/issues/258)) ([0472460](https://github.com/home-operations/kromgo/commit/047246024fa4e6c33487c7041dccea2f5ea554ca))
+
+
+### Miscellaneous Chores
+
+* **mise:** update tool oxfmt (0.54.0 → 0.55.0) ([#257](https://github.com/home-operations/kromgo/issues/257)) ([3a90072](https://github.com/home-operations/kromgo/commit/3a90072a2e032ed08b8fd402b7a10d508d08d6f6))
+
 ## [0.14.8](https://github.com/home-operations/kromgo/compare/0.14.7...0.14.8) (2026-06-15)
 
 
