@@ -64,6 +64,11 @@ func TestBadgeRender_ForTheBadge(t *testing.T) {
 	flat := r.render(badgeSpec{style: config.StyleFlat, label: "build", message: "passing", color: "green", id: "b"})
 	assert.Greater(t, svgWidth(t, svg), svgWidth(t, flat), "for-the-badge is wider than flat")
 
+	// for-the-badge text is flat (no drop shadow), as shields.io renders it — unlike
+	// flat/flat-square/plastic, which do shadow their text.
+	assert.NotContains(t, s, `fill-opacity=".3"`, "for-the-badge text has no drop shadow")
+	assert.Contains(t, string(flat), `fill-opacity=".3"`, "flat text keeps its drop shadow")
+
 	// Baseline sits inside the 28px box (catches a negated/wildly-off baseline).
 	y := firstGlyphBaselineY(t, s)
 	assert.Greater(t, y, 7.0)

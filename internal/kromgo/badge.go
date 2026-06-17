@@ -278,19 +278,23 @@ func xmlIDSafe(s string) string {
 }
 
 // writeText draws s as glyph paths (regular face, configured size) at (originX, baseline)
-// on a background of bgHex. See emitTextPath.
+// on a background of bgHex, with a drop shadow. See emitTextPath.
 func (b *badgeRenderer) writeText(s *strings.Builder, text string, originX, baseline float64, bgHex string) {
-	b.emitTextPath(s, b.glyphPath(text, originX, baseline), bgHex)
+	b.emitTextPath(s, b.glyphPath(text, originX, baseline), bgHex, true)
 }
 
-// emitTextPath writes a rendered glyph path d as a 1px drop shadow beneath a fill, both
-// colored for legibility on a background of bgHex. Nothing is written for empty text.
-func (b *badgeRenderer) emitTextPath(s *strings.Builder, d, bgHex string) {
+// emitTextPath writes a rendered glyph path d as a fill colored for legibility on a
+// background of bgHex, optionally under a 1px drop shadow. Nothing is written for empty
+// text. flat/flat-square/plastic shadow their text (as shields.io does); for-the-badge
+// does not (shields.io renders for-the-badge text flat).
+func (b *badgeRenderer) emitTextPath(s *strings.Builder, d, bgHex string, shadow bool) {
 	if d == "" {
 		return
 	}
 	textColor, shadowColor := colorsForBackground(bgHex)
-	fmt.Fprintf(s, `<path transform="translate(0 1)" fill="%s" fill-opacity=".3" d="%s"/>`, shadowColor, d)
+	if shadow {
+		fmt.Fprintf(s, `<path transform="translate(0 1)" fill="%s" fill-opacity=".3" d="%s"/>`, shadowColor, d)
+	}
 	fmt.Fprintf(s, `<path fill="%s" d="%s"/>`, textColor, d)
 }
 
@@ -388,9 +392,9 @@ func (b *badgeRenderer) renderForTheBadge(spec badgeSpec) []byte {
 			logoMinX, (ftbHeight-ftbIconSize)/2, scale, iconColor, spec.iconPath)
 	}
 	if hasLabel {
-		b.emitTextPath(&s, b.glyphPathFace(b.font, label, float64(labelTextMinX), ftbBaseline, ftbFontSize, ftbTracking), labelHex)
+		b.emitTextPath(&s, b.glyphPathFace(b.font, label, float64(labelTextMinX), ftbBaseline, ftbFontSize, ftbTracking), labelHex, false)
 	}
-	b.emitTextPath(&s, b.glyphPathFace(b.boldFont, message, float64(msgTextMinX), ftbBaseline, ftbFontSize, ftbTracking), msgHex)
+	b.emitTextPath(&s, b.glyphPathFace(b.boldFont, message, float64(msgTextMinX), ftbBaseline, ftbFontSize, ftbTracking), msgHex, false)
 	s.WriteString(`</g></svg>`)
 	return []byte(s.String())
 }
