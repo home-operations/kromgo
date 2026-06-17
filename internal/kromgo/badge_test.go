@@ -15,14 +15,17 @@ import (
 func TestColorNameToHex(t *testing.T) {
 	t.Parallel()
 	cases := map[string]string{
-		"":          "#007ec6", // default blue
-		"blue":      "#007ec6",
-		"green":     "#97ca00",
-		"red":       "#e05d44",
-		"inactive":  "#9f9f9f",
-		"#a1b2c3":   "#a1b2c3", // valid hex passes through
-		"#zzz":      "#97ca00", // invalid hex → fallback green
-		"notacolor": "#97ca00", // unknown name → fallback green
+		"":            "#007ec6", // default blue
+		"blue":        "#007ec6",
+		"green":       "#67ac09",
+		"brightgreen": "#4b0",
+		"orange":      "#ea7233",
+		"red":         "#dd4343",
+		"success":     "#4b0", // shields: success == brightgreen
+		"inactive":    "#939393",
+		"#a1b2c3":     "#a1b2c3", // valid hex passes through
+		"#zzz":        "#67ac09", // invalid hex → fallback green
+		"notacolor":   "#67ac09", // unknown name → fallback green
 	}
 	for in, want := range cases {
 		t.Run(in, func(t *testing.T) {
@@ -238,11 +241,11 @@ func TestBadgeRenderError(t *testing.T) {
 
 	// 4xx → red ("your request is wrong"); 5xx → grey ("couldn't get an answer").
 	client := string(r.renderError("cpu", "Not Found", 404))
-	assert.Contains(t, client, "#e05d44", "client errors are red")
+	assert.Contains(t, client, "#dd4343", "client errors are red")
 	assert.Contains(t, client, `aria-label="cpu: Not Found"`)
 
 	server := string(r.renderError("cpu", "Query Error", 500))
-	assert.Contains(t, server, "#9f9f9f", "server/upstream errors are grey")
+	assert.Contains(t, server, "#939393", "server/upstream errors are grey")
 	assert.Contains(t, server, `aria-label="cpu: Query Error"`)
 }
 

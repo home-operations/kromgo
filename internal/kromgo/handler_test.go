@@ -120,7 +120,7 @@ func TestServeBadge_Output(t *testing.T) {
 			assert.Equal(t, "image/svg+xml", w.Header().Get("Content-Type"))
 			assert.Equal(t, "no-store", w.Header().Get("Cache-Control"))
 			assert.Contains(t, w.Body.String(), `aria-label="does-not-exist: Not Found"`)
-			assert.Contains(t, w.Body.String(), "#e05d44") // red message segment
+			assert.Contains(t, w.Body.String(), "#dd4343") // red message segment
 		}},
 		{"not found json", "/badges/does-not-exist?format=json", func(t *testing.T, w *httptest.ResponseRecorder) {
 			// Non-svg formats keep the JSON error and its status code.

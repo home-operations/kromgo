@@ -109,7 +109,7 @@ func TestGallery(t *testing.T) {
 	group(&b, "Badge styles", func() {
 		// A different badge per style so they're easy to tell apart.
 		for _, sb := range []struct{ style, id string }{
-			{"flat", "cpu"}, {"flat-square", "pods"}, {"plastic", "mem"},
+			{"flat", "cpu"}, {"flat-square", "pods"}, {"plastic", "mem"}, {"for-the-badge", "mem"},
 		} {
 			bd := byID[sb.id]
 			bd.Style = sb.style

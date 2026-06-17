@@ -22,11 +22,12 @@ const defaultBadgeFontSize = 11
 // segment widths always match the glyphs exactly. sfnt.Font is safe for concurrent
 // use as long as each call uses its own Buffer.
 type badgeRenderer struct {
-	font *sfnt.Font
-	size float64
+	font     *sfnt.Font // regular face: label text and the flat/flat-square/plastic styles
+	boldFont *sfnt.Font // bold companion: the for-the-badge message segment
+	size     float64
 }
 
-// newBadgeRenderer parses the configured font and returns a renderer.
+// newBadgeRenderer parses the configured font and its bold companion and returns a renderer.
 func newBadgeRenderer(cfg config.BadgeDefaults) (*badgeRenderer, error) {
 	data, err := resolveBadgeFont(cfg.Font)
 	if err != nil {
@@ -36,43 +37,71 @@ func newBadgeRenderer(cfg config.BadgeDefaults) (*badgeRenderer, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parsing badge font: %w", err)
 	}
+	boldData, err := resolveBadgeBoldFont(cfg.Font)
+	if err != nil {
+		return nil, fmt.Errorf("badge bold font: %w", err)
+	}
+	bold, err := sfnt.Parse(boldData)
+	if err != nil {
+		return nil, fmt.Errorf("parsing badge bold font: %w", err)
+	}
 	size := float64(cfg.Size)
 	if size <= 0 {
 		size = defaultBadgeFontSize
 	}
-	return &badgeRenderer{font: f, size: size}, nil
+	return &badgeRenderer{font: f, boldFont: bold, size: size}, nil
 }
 
-func (b *badgeRenderer) ppem() fixed.Int26_6 { return fixed.Int26_6(b.size * 64) }
+func ppemFor(size float64) fixed.Int26_6 { return fixed.Int26_6(size * 64) }
 
-// measure returns the rendered width of s in pixels (sum of glyph advances).
-func (b *badgeRenderer) measure(s string) int {
+// measure returns the rendered width of s in pixels for the regular face at the
+// configured size, with no letter-spacing.
+func (b *badgeRenderer) measure(s string) int { return b.measureFace(b.font, s, b.size, 0) }
+
+// measureFace returns the rendered width of s in pixels: the sum of face f's glyph
+// advances at the given size, plus `tracking` px of letter-spacing after every glyph.
+// The tracking term is added in float space after the fixed→float conversion, so with
+// tracking == 0 the result is bit-identical to a plain advance sum (the flat path).
+func (b *badgeRenderer) measureFace(f *sfnt.Font, s string, size, tracking float64) int {
 	var buf sfnt.Buffer
 	var w fixed.Int26_6
+	ppem := ppemFor(size)
+	n := 0
 	for _, r := range s {
-		gid, err := b.font.GlyphIndex(&buf, r)
+		n++
+		gid, err := f.GlyphIndex(&buf, r)
 		if err != nil || gid == 0 {
-			w += fixed.Int26_6(b.size * 0.5 * 64) // fallback for a missing glyph
+			w += fixed.Int26_6(size * 0.5 * 64) // fallback for a missing glyph
 			continue
 		}
-		if adv, err := b.font.GlyphAdvance(&buf, gid, b.ppem(), font.HintingNone); err == nil {
+		if adv, err := f.GlyphAdvance(&buf, gid, ppem, font.HintingNone); err == nil {
 			w += adv
 		}
 	}
-	return int(float64(w)/64 + 0.5)
+	return int(float64(w)/64 + tracking*float64(n) + 0.5)
 }
 
-// glyphPath returns SVG path data for s, with the text baseline at (originX, baseline).
+// glyphPath returns SVG path data for s drawn with the regular face at the configured
+// size (no letter-spacing), with the text baseline at (originX, baseline).
 func (b *badgeRenderer) glyphPath(s string, originX, baseline float64) string {
+	return b.glyphPathFace(b.font, s, originX, baseline, b.size, 0)
+}
+
+// glyphPathFace returns SVG path data for s drawn with face f at the given size, the
+// text baseline at (originX, baseline), advancing `tracking` px after each glyph. The
+// per-glyph advance walk is unchanged from the plain path; the tracking step is guarded
+// so tracking == 0 reproduces it exactly.
+func (b *badgeRenderer) glyphPathFace(f *sfnt.Font, s string, originX, baseline, size, tracking float64) string {
 	var buf sfnt.Buffer
 	pen := originX
 	var d strings.Builder
+	ppem := ppemFor(size)
 	f26 := func(v fixed.Int26_6) float64 { return float64(v) / 64 }
 
 	for _, r := range s {
-		gid, err := b.font.GlyphIndex(&buf, r)
+		gid, err := f.GlyphIndex(&buf, r)
 		if err == nil && gid != 0 {
-			if segs, err := b.font.LoadGlyph(&buf, gid, b.ppem(), nil); err == nil {
+			if segs, err := f.LoadGlyph(&buf, gid, ppem, nil); err == nil {
 				for i, seg := range segs {
 					a := seg.Args
 					switch seg.Op {
@@ -94,10 +123,13 @@ func (b *badgeRenderer) glyphPath(s string, originX, baseline float64) string {
 				}
 			}
 		}
-		if adv, err := b.font.GlyphAdvance(&buf, gid, b.ppem(), font.HintingNone); err == nil {
+		if adv, err := f.GlyphAdvance(&buf, gid, ppem, font.HintingNone); err == nil {
 			pen += f26(adv)
 		} else {
-			pen += b.size * 0.5
+			pen += size * 0.5
+		}
+		if tracking != 0 {
+			pen += tracking
 		}
 	}
 	return d.String()
@@ -119,6 +151,9 @@ type badgeSpec struct {
 
 // render produces an SVG badge from a fully-resolved spec.
 func (b *badgeRenderer) render(spec badgeSpec) []byte {
+	if spec.style == config.StyleForTheBadge {
+		return b.renderForTheBadge(spec)
+	}
 	const (
 		xPad    = 6 // horizontal padding around each text segment
 		iconX   = 5 // icon left margin
@@ -242,17 +277,126 @@ func xmlIDSafe(s string) string {
 	}, s)
 }
 
-// writeText draws s as glyph paths at (originX, baseline) on a background of bgHex:
-// a 1px drop shadow beneath a fill, both colored for legibility on that background.
-// Nothing is written for empty text.
+// writeText draws s as glyph paths (regular face, configured size) at (originX, baseline)
+// on a background of bgHex, with a drop shadow. See emitTextPath.
 func (b *badgeRenderer) writeText(s *strings.Builder, text string, originX, baseline float64, bgHex string) {
-	d := b.glyphPath(text, originX, baseline)
+	b.emitTextPath(s, b.glyphPath(text, originX, baseline), bgHex, true)
+}
+
+// emitTextPath writes a rendered glyph path d as a fill colored for legibility on a
+// background of bgHex, optionally under a 1px drop shadow. Nothing is written for empty
+// text. flat/flat-square/plastic shadow their text (as shields.io does); for-the-badge
+// does not (shields.io renders for-the-badge text flat).
+func (b *badgeRenderer) emitTextPath(s *strings.Builder, d, bgHex string, shadow bool) {
 	if d == "" {
 		return
 	}
 	textColor, shadowColor := colorsForBackground(bgHex)
-	fmt.Fprintf(s, `<path transform="translate(0 1)" fill="%s" fill-opacity=".3" d="%s"/>`, shadowColor, d)
+	if shadow {
+		fmt.Fprintf(s, `<path transform="translate(0 1)" fill="%s" fill-opacity=".3" d="%s"/>`, shadowColor, d)
+	}
 	fmt.Fprintf(s, `<path fill="%s" d="%s"/>`, textColor, d)
+}
+
+// for-the-badge geometry — a faithful port of shields.io's forTheBadge() renderer:
+// 28px tall, 10px UPPERCASE text with letter-spacing, a bold message segment, square
+// corners, and no gradient. Fixed-size (ignores defaults.badge.size), as in shields.
+const (
+	ftbHeight     = 28
+	ftbFontSize   = 10
+	ftbTracking   = 1.25 // letter-spacing: px advanced after each glyph
+	ftbTextMargin = 12   // text inset on each side of a segment
+	ftbLogoMargin = 9    // icon left margin
+	ftbLogoGutter = 6    // gap between icon and text
+	ftbIconSize   = 14   // == shields' for-the-badge logoWidth
+	ftbBaseline   = 17.5 // text baseline (shields y:175 at scale .1)
+)
+
+// renderForTheBadge draws the shields-style "for-the-badge" variant. The segment layout
+// mirrors shields' forTheBadge() line-for-line: kromgo draws left-aligned, exact-width
+// glyph paths at each segment's text-inset x, spanning the same range shields produces
+// with text-anchor=middle + textLength, so the width/position math ports directly. The
+// label uses the regular face; the message uses the bold companion (shields renders the
+// message bold). spec is never mutated, so the accessible label stays original-case.
+func (b *badgeRenderer) renderForTheBadge(spec badgeSpec) []byte {
+	label := strings.ToUpper(spec.label)
+	message := strings.ToUpper(spec.message)
+	hasLabel := label != ""
+	hasIcon := spec.iconPath != ""
+
+	labelW := 0
+	if hasLabel {
+		labelW = b.measureFace(b.font, label, ftbFontSize, ftbTracking)
+	}
+	msgW := b.measureFace(b.boldFont, message, ftbFontSize, ftbTracking)
+
+	// noText (no label and no message) collapses the icon gutter, matching shields.
+	gutter := ftbLogoGutter
+	if !hasLabel && message == "" {
+		gutter = ftbLogoGutter - ftbLogoMargin
+	}
+	// A label rect is drawn when there's label text, or an icon paired with an explicit
+	// labelColor (a colored logo box with no text).
+	needsLabelRect := hasLabel || (hasIcon && spec.labelColor != "")
+
+	logoMinX := ftbLogoMargin
+	labelTextMinX := ftbTextMargin
+	if hasIcon {
+		labelTextMinX = logoMinX + ftbIconSize + gutter
+	}
+
+	labelRectW := 0
+	var msgTextMinX, msgRectW int
+	switch {
+	case needsLabelRect:
+		if hasLabel {
+			labelRectW = labelTextMinX + labelW + ftbTextMargin
+		} else {
+			labelRectW = 2*ftbLogoMargin + ftbIconSize
+		}
+		msgTextMinX = labelRectW + ftbTextMargin
+		msgRectW = 2*ftbTextMargin + msgW
+	case hasIcon:
+		msgTextMinX = ftbTextMargin + ftbIconSize + gutter
+		msgRectW = 2*ftbTextMargin + ftbIconSize + gutter + msgW
+	default:
+		msgTextMinX = ftbTextMargin
+		msgRectW = 2*ftbTextMargin + msgW
+	}
+	total := labelRectW + msgRectW
+
+	msgHex := colorNameToHex(spec.color)
+	labelHex := cmp.Or(spec.labelColor, labelBg)
+	alt := html.EscapeString(accessibleText(spec.label, spec.message))
+	clipID := "r-" + xmlIDSafe(spec.id)
+
+	var s strings.Builder
+	fmt.Fprintf(&s, `<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s">`, total, ftbHeight, total, ftbHeight, alt)
+	fmt.Fprintf(&s, `<title>%s</title>`, alt)
+	// Square corners, no gloss gradient (shields' crispEdges look).
+	fmt.Fprintf(&s, `<clipPath id="%s"><rect width="%d" height="%d" rx="0" fill="#fff"/></clipPath>`, clipID, total, ftbHeight)
+	fmt.Fprintf(&s, `<g clip-path="url(#%s)">`, clipID)
+	if labelRectW > 0 {
+		fmt.Fprintf(&s, `<rect width="%d" height="%d" fill="%s"/>`, labelRectW, ftbHeight, labelHex)
+	}
+	fmt.Fprintf(&s, `<rect x="%d" width="%d" height="%d" fill="%s"/>`, labelRectW, msgRectW, ftbHeight, msgHex)
+	if hasIcon {
+		// The icon sits on the label rect when there is one, else on the message rect.
+		iconBg := msgHex
+		if labelRectW > 0 {
+			iconBg = labelHex
+		}
+		iconColor, _ := colorsForBackground(iconBg)
+		scale := float64(ftbIconSize) / 24.0
+		fmt.Fprintf(&s, `<g transform="translate(%d %d) scale(%.4f)"><path fill="%s" d="%s"/></g>`,
+			logoMinX, (ftbHeight-ftbIconSize)/2, scale, iconColor, spec.iconPath)
+	}
+	if hasLabel {
+		b.emitTextPath(&s, b.glyphPathFace(b.font, label, float64(labelTextMinX), ftbBaseline, ftbFontSize, ftbTracking), labelHex, false)
+	}
+	b.emitTextPath(&s, b.glyphPathFace(b.boldFont, message, float64(msgTextMinX), ftbBaseline, ftbFontSize, ftbTracking), msgHex, false)
+	s.WriteString(`</g></svg>`)
+	return []byte(s.String())
 }
 
 // styleAppearance returns the corner radius and linear-gradient stops for a badge
@@ -271,30 +415,36 @@ func styleAppearance(style string) (rx int, gradStops string) {
 
 var hexColorRe = regexp.MustCompile(`^#[0-9a-fA-F]{3,8}$`)
 
+// The current shields.io named-color palette, so a directly-rendered kromgo badge is
+// the same color as the same badge served through shields.io.
 const (
-	colorBlue  = "#007ec6"
-	colorGreen = "#97ca00"
-	colorGrey  = "#9f9f9f"
-	labelBg    = "#555" // label-side (left) background; always dark, so its text is white
+	colorBlue        = "#007ec6"
+	colorGreen       = "#67ac09"
+	colorBrightGreen = "#4b0"
+	colorOrange      = "#ea7233"
+	colorRed         = "#dd4343"
+	colorGrey        = "#939393" // lightgrey/lightgray/inactive
+	labelBg          = "#555"    // label-side (left) background; always dark, so its text is white
 )
 
-// badgeColors maps shields.io color names to hex. "" is the default (blue).
+// badgeColors maps shields.io color names to hex (the current shields.io palette). ""
+// is the default (blue).
 var badgeColors = map[string]string{
 	"":              colorBlue,
 	"blue":          colorBlue,
-	"brightgreen":   "#4c1",
+	"brightgreen":   colorBrightGreen,
 	"green":         colorGreen,
-	"yellow":        "#dfb317",
-	"yellowgreen":   "#a4a61d",
-	"orange":        "#fe7d37",
-	"red":           "#e05d44",
+	"yellow":        "#d8b800",
+	"yellowgreen":   "#95991a",
+	"orange":        colorOrange,
+	"red":           colorRed,
 	"grey":          "#555",
 	"gray":          "#555",
 	"lightgrey":     colorGrey,
 	"lightgray":     colorGrey,
-	"success":       colorGreen,
-	"important":     "#fe7d37",
-	"critical":      "#e05d44",
+	"success":       colorBrightGreen, // shields: success == brightgreen
+	"important":     colorOrange,
+	"critical":      colorRed,
 	"informational": colorBlue,
 	"inactive":      colorGrey,
 }
