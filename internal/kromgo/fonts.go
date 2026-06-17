@@ -3,6 +3,7 @@ package kromgo
 import (
 	_ "embed"
 	"fmt"
+	"strings"
 
 	"github.com/golang/freetype/truetype"
 )
@@ -42,6 +43,25 @@ func resolveBadgeFont(name string) ([]byte, error) {
 		return data, nil
 	}
 	return nil, fmt.Errorf("unknown font %q", name)
+}
+
+// resolveBadgeBoldFont returns the TTF bytes for the bold companion of a badge font
+// name — the face the for-the-badge style draws its (bold) message segment with. The
+// companion is "<name>-bold" (empty = dejavu-sans-bold, the default face's bold). A
+// name that is already a "-bold" face is its own companion. A face with no bundled
+// bold companion degrades gracefully to its regular bytes rather than erroring, so a
+// future regular-only face still renders for-the-badge (just not bold).
+func resolveBadgeBoldFont(name string) ([]byte, error) {
+	if name == "" {
+		return dejavuSansBoldTTF, nil
+	}
+	if strings.HasSuffix(name, "-bold") {
+		return resolveBadgeFont(name)
+	}
+	if data := embeddedFonts[name+"-bold"]; data != nil {
+		return data, nil
+	}
+	return resolveBadgeFont(name) // no bold companion — fall back to the regular face
 }
 
 // resolveGraphFont returns the parsed font for a graph font name (empty = the default

@@ -125,7 +125,7 @@ defaults:
     badge:
         font: dejavu-sans # dejavu-sans (default, shields.io-style), dejavu-sans-bold, comic-neue, comic-neue-bold
         size: 11 # badge font size in points
-        style: flat # flat (default), flat-square, or plastic
+        style: flat # flat (default), flat-square, plastic, or for-the-badge
         gallery:
             hidden: false # list badges in the gallery (default); true hides them
     graph:
@@ -155,9 +155,28 @@ Each entry under `badges:` defines an instant-value endpoint at `/badges/{id}`.
 | `valueExpr`  | no       | CEL expression for the displayed string — see [Value and color](#value-and-color)    |
 | `colorExpr`  | no       | CEL expression for the color — see [Value and color](#value-and-color)               |
 | `labelColor` | no       | Left-segment (label) color — a name or hex; a fixed value, not a CEL expression      |
-| `style`      | no       | `flat` (default), `flat-square`, or `plastic`                                        |
+| `style`      | no       | `flat` (default), `flat-square`, `plastic`, or `for-the-badge` (see below)           |
 | `icon`       | no       | An icon on the SVG badge, e.g. `mdi:server-outline` or `si:kubernetes` — see below   |
 | `gallery`    | no       | Per-badge gallery settings, e.g. `gallery: {hidden: true}` — see [Gallery](#gallery) |
+
+#### Styles
+
+`flat` (the default), `flat-square`, and `plastic` are the familiar shields.io looks — a 20px badge
+that honors `defaults.badge.font`/`size`. `for-the-badge` is the chunky shields variant: a fixed 28px
+badge with **uppercased**, letter-spaced text and a bold value segment. Being a faithful port of
+shields' own geometry, it is **fixed-size** — it ignores `defaults.badge.font`/`size` (the value's
+bold weight is the configured face's bold companion). It pairs naturally with an `icon` and, with no
+`title`, collapses to a single logo+value segment — the shields "empty label" form:
+
+```yaml
+badges:
+    - id: kubernetes
+      query: kubernetes_build_info
+      valueExpr: labels[?"git_version"].orValue("unknown")
+      style: for-the-badge
+      icon: si:kubernetes
+      colorExpr: '"blue"'
+```
 
 #### Icons
 

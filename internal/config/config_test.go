@@ -113,6 +113,22 @@ func TestLoad_InvalidID(t *testing.T) {
 	assert.Contains(t, err.Error(), "id must match")
 }
 
+func TestLoad_Style(t *testing.T) {
+	t.Parallel()
+	// Every supported style passes validation, both per-badge and as a default.
+	for _, style := range []string{StyleFlat, StyleFlatSquare, StylePlastic, StyleForTheBadge} {
+		_, err := Load(writeConfig(t, "badges:\n  - id: cpu\n    query: q\n    style: "+style+"\n"))
+		require.NoErrorf(t, err, "badge style %q should be valid", style)
+		_, err = Load(writeConfig(t, "defaults:\n  badge:\n    style: "+style+"\nbadges:\n  - id: cpu\n    query: q\n"))
+		require.NoErrorf(t, err, "default badge style %q should be valid", style)
+	}
+
+	// An unknown style is still rejected (guards ValidStyle staying authoritative).
+	_, err := Load(writeConfig(t, "badges:\n  - id: cpu\n    query: q\n    style: for-the-win\n"))
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "unknown style")
+}
+
 func TestLoadServer_Defaults(t *testing.T) {
 	// Clear any inherited env so envDefault applies. t.Setenv registers the
 	// restore; os.Unsetenv then removes the var for the duration of the test.

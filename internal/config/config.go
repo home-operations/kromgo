@@ -67,7 +67,7 @@ type BadgeDefaults struct {
 	Font string `yaml:"font,omitempty" json:"font,omitempty"`
 	// Size is the font size in points (defaults to 11).
 	Size int `yaml:"size,omitempty" json:"size,omitempty"`
-	// Style is the default badge style: flat (default), flat-square, or plastic.
+	// Style is the default badge style: flat (default), flat-square, plastic, or for-the-badge.
 	Style string `yaml:"style,omitempty" json:"style,omitempty"`
 	// LabelColor is the default left-segment (label) color — a name or hex. Empty = grey (#555).
 	LabelColor string `yaml:"labelColor,omitempty" json:"labelColor,omitempty"`
@@ -200,9 +200,10 @@ const (
 	ReduceMax   = "max"
 	ReduceSum   = "sum"
 
-	StyleFlat       = "flat"
-	StyleFlatSquare = "flat-square"
-	StylePlastic    = "plastic"
+	StyleFlat        = "flat"
+	StyleFlatSquare  = "flat-square"
+	StylePlastic     = "plastic"
+	StyleForTheBadge = "for-the-badge"
 )
 
 // ValidReduce is the set of supported range-query reducers.
@@ -213,7 +214,7 @@ var ValidReduce = map[string]bool{
 
 // ValidStyle is the set of supported badge styles.
 var ValidStyle = map[string]bool{
-	StyleFlat: true, StyleFlatSquare: true, StylePlastic: true,
+	StyleFlat: true, StyleFlatSquare: true, StylePlastic: true, StyleForTheBadge: true,
 }
 
 // legacyKeys are top-level keys from the pre-0.12 schema; their presence triggers a
