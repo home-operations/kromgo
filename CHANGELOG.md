@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.14.10](https://github.com/home-operations/kromgo/compare/0.14.9...0.14.10) (2026-06-18)
+
+
+### Features
+
+* move the monitoring port (health + metrics) to 8081 ([#265](https://github.com/home-operations/kromgo/issues/265)) ([36a9122](https://github.com/home-operations/kromgo/commit/36a9122c1935da1463ffb85a74e751e4d235f758))
+
+
+### Miscellaneous Chores
+
+* **mise:** update node toolchain (24.16.0 → v24.17.0) ([#263](https://github.com/home-operations/kromgo/issues/263)) ([0637abc](https://github.com/home-operations/kromgo/commit/0637abc8b7aa61e7de822416ea2054f44ddba47e))
+* **mise:** update tool helm (4.2.1 → 4.2.2) ([#261](https://github.com/home-operations/kromgo/issues/261)) ([e9c06d1](https://github.com/home-operations/kromgo/commit/e9c06d147497c9cfccbc1292f33c88c7e522c2ee))
+
 ## [0.14.9](https://github.com/home-operations/kromgo/compare/0.14.8...0.14.9) (2026-06-17)
 
 
