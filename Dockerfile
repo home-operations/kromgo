@@ -30,5 +30,5 @@ RUN upx --best --lzma /out/kromgo
 
 FROM gcr.io/distroless/static:nonroot
 COPY --from=builder /out/kromgo /kromgo
-EXPOSE 8080/tcp 8888/tcp
+EXPOSE 8080/tcp 8081/tcp
 ENTRYPOINT ["/kromgo"]

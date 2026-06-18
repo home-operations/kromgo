@@ -140,7 +140,7 @@ func TestLoadServer_Defaults(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "0.0.0.0", sc.ServerHost)
 	assert.Equal(t, 8080, sc.ServerPort)
-	assert.Equal(t, 8888, sc.HealthPort)
+	assert.Equal(t, 8081, sc.HealthPort)
 	assert.Equal(t, 30*time.Second, sc.QueryTimeout)
 	assert.Equal(t, 15*time.Second, sc.ServerReadTimeout, "read timeout defaults to a bounded value, not 0")
 	assert.Equal(t, 60*time.Second, sc.ServerWriteTimeout, "write timeout defaults above QueryTimeout")

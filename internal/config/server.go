@@ -12,7 +12,7 @@ type ServerConfig struct {
 	ServerPort int    `env:"SERVER_PORT" envDefault:"8080"`
 
 	HealthHost string `env:"HEALTH_HOST" envDefault:"0.0.0.0"`
-	HealthPort int    `env:"HEALTH_PORT" envDefault:"8888"`
+	HealthPort int    `env:"HEALTH_PORT" envDefault:"8081"`
 
 	// ServerReadTimeout / ServerWriteTimeout bound reading a request and writing its
 	// response on the public listener; the defaults harden against slow-client
