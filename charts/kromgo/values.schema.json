@@ -598,7 +598,7 @@
       "type": "object"
     },
     "server": {
-      "description": "Server tuning — kromgo's runtime environment variables (distinct from the\nconfig file above). SERVER_HOST/PORT and HEALTH_HOST/PORT are fixed by the\nchart (the Service and probes are wired to 8080 / 8888) and not exposed here.",
+      "description": "Server tuning — kromgo's runtime environment variables (distinct from the\nconfig file above). SERVER_HOST/PORT and HEALTH_HOST/PORT are fixed by the\nchart (the Service and probes are wired to 8080 / 8081) and not exposed here.",
       "properties": {
         "extraEnv": {
           "description": "Extra raw env vars merged into the container (advanced), e.g. GOMEMLIMIT.",
@@ -640,7 +640,7 @@
     "service": {
       "properties": {
         "metricsPort": {
-          "default": 8888,
+          "default": 8081,
           "description": "Health + /metrics port.",
           "title": "metricsPort",
           "type": "integer"

@@ -97,7 +97,7 @@ Kubernetes: `>=1.25.0-0`
 | server.queryTimeout | string | `"30s"` | QUERY_TIMEOUT — bounds each outbound Prometheus query (Go duration). |
 | server.readTimeout | string | `"15s"` | SERVER_READ_TIMEOUT (Go duration); "0" disables the read deadline. |
 | server.writeTimeout | string | `"60s"` | SERVER_WRITE_TIMEOUT (Go duration, must exceed queryTimeout); "0" disables it. |
-| service.metricsPort | int | `8888` | Health + /metrics port. |
+| service.metricsPort | int | `8081` | Health + /metrics port. |
 | service.port | int | `8080` | Badge / graph / gallery port. |
 | service.type | string | `"ClusterIP"` | Service type. |
 | serviceAccount.annotations | object | `{}` | Annotations for the ServiceAccount. |

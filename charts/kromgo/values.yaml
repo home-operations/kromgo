@@ -108,7 +108,7 @@ config:
 
 # Server tuning — kromgo's runtime environment variables (distinct from the
 # config file above). SERVER_HOST/PORT and HEALTH_HOST/PORT are fixed by the
-# chart (the Service and probes are wired to 8080 / 8888) and not exposed here.
+# chart (the Service and probes are wired to 8080 / 8081) and not exposed here.
 server:
   # -- QUERY_TIMEOUT — bounds each outbound Prometheus query (Go duration).
   queryTimeout: 30s
@@ -185,7 +185,7 @@ service:
   # -- Badge / graph / gallery port.
   port: 8080
   # -- Health + /metrics port.
-  metricsPort: 8888
+  metricsPort: 8081
 
 ingress:
   # -- Expose the UI via an Ingress.

@@ -77,7 +77,7 @@ spec:
               containerPort: 8080
               protocol: TCP
             - name: health
-              containerPort: 8888
+              containerPort: 8081
               protocol: TCP
           livenessProbe:
             {{- tpl (toYaml .Values.livenessProbe) $ | nindent 12 }}

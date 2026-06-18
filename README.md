@@ -107,7 +107,7 @@ point your editor's YAML language server at it for inline completion and validat
 | `SERVER_HOST`          | no       | `0.0.0.0` | Host to bind the main server                |
 | `SERVER_PORT`          | no       | `8080`    | Port for the main server                    |
 | `HEALTH_HOST`          | no       | `0.0.0.0` | Host to bind the health server              |
-| `HEALTH_PORT`          | no       | `8888`    | Port for the health/metrics server          |
+| `HEALTH_PORT`          | no       | `8081`    | Port for the health/metrics server          |
 | `SERVER_LOGGING`       | no       | `false`   | Enable HTTP request access logging          |
 | `SERVER_READ_TIMEOUT`  | no       | —         | HTTP read timeout (e.g. `5s`)               |
 | `SERVER_WRITE_TIMEOUT` | no       | —         | HTTP write timeout (e.g. `10s`)             |
@@ -524,7 +524,7 @@ When nothing is visible the gallery shows a short hint instead.
 | Port   | Purpose                                                        |
 | ------ | -------------------------------------------------------------- |
 | `8080` | Main server — badge and graph endpoints                        |
-| `8888` | Health server — `/healthz`, `/readyz`, `/metrics` (Prometheus) |
+| `8081` | Health server — `/healthz`, `/readyz`, `/metrics` (Prometheus) |
 
 The health server's `/metrics` endpoint exposes Go runtime metrics plus
 `kromgo_requests_total{kind, id, format}` — a counter of requests handled, broken down by endpoint
@@ -677,7 +677,7 @@ kromgo is built to face the public web. Its posture:
 
 Operational guidance:
 
-- **Expose only the main port (`8080`).** The health port (`8888`) serves `/metrics` and probes —
+- **Expose only the main port (`8080`).** The health port (`8081`) serves `/metrics` and probes —
   keep it on the internal network.
 - **Terminate TLS and rate limit at your reverse proxy** (see [Rate limiting](#rate-limiting)).
 - Treat the config as trusted (it's operator-controlled). Fonts are compiled-in (never read from
