@@ -106,7 +106,7 @@ Kubernetes: `>=1.25.0-0`
 | serviceAccount.name | string | `""` | ServiceAccount name; generated from the release name if empty. |
 | tests.image.pullPolicy | string | `"IfNotPresent"` | `helm test` image pull policy. |
 | tests.image.repository | string | `"mirror.gcr.io/curlimages/curl"` | `helm test` connection-pod image; a gcr-mirrored curl, so the test never pulls from Docker Hub. |
-| tests.image.tag | string | `"8.20.0@sha256:b3f1fb2a51d923260350d21b8654bbc607164a987e2f7c84a0ac199a67df812a"` | `helm test` image, pinned as `tag@sha256:digest` so Renovate bumps the tag and its digest together. |
+| tests.image.tag | string | `"8.21.0@sha256:7c12af72ceb38b7432ab85e1a265cff6ae58e06f95539d539b654f2cfa64bb13"` | `helm test` image, pinned as `tag@sha256:digest` so Renovate bumps the tag and its digest together. |
 | tolerations | list | `[]` | Tolerations for pod scheduling. |
 | volumeMounts | list | `[]` | Additional volume mounts on the container. |
 | volumes | list | `[]` | Additional volumes on the Deployment. |
