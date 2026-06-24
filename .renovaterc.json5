@@ -22,6 +22,7 @@
       matchFileNames: [".mise/config.toml", "go.mod"],
       groupName: "Go toolchain",
       groupSlug: "go-toolchain",
+      minimumGroupSize: 2,
     },
     {
       description: "Node Toolchain Group",
@@ -30,6 +31,7 @@
       matchFileNames: [".mise/config.toml"],
       groupName: "Node toolchain",
       groupSlug: "node-toolchain",
+      minimumGroupSize: 2,
     },
   ],
 }
