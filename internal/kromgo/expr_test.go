@@ -33,6 +33,7 @@ func TestCEL_Expressions(t *testing.T) {
 		{"int threshold", `result < 35 ? "green" : "red"`, 17.5, nil, "green"},
 		{"int threshold high", `result < 35 ? "green" : "red"`, 80, nil, "red"},
 		{"label", `labels["version"]`, 0, map[string]string{"version": "v1.2.3"}, "v1.2.3"},
+		{"humanize", `humanize(result)`, 93166031, nil, "93.17M"},
 		{"humanizeBytes", `humanizeBytes(result)`, 1572864, nil, "1.6MB"},
 		{"humanizeDuration short", `humanizeDuration(result)`, 9000, nil, "2h30m"},
 		{"humanizeDuration long", `humanizeDuration(result)`, 467 * 86400, nil, "1y3mo12d"},

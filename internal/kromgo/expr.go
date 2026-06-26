@@ -44,6 +44,7 @@ func unaryStringFunc(name string, impl func(float64) string) cel.EnvOption {
 // humanizerFuncs registers kromgo's value-formatting helpers (see formatting.go).
 func humanizerFuncs() []cel.EnvOption {
 	return []cel.EnvOption{
+		unaryStringFunc("humanize", humanize),
 		unaryStringFunc("humanizeBytes", humanizeBytes),
 		unaryStringFunc("humanizeCommas", humanizeCommas),
 		unaryStringFunc("humanizeFloat", humanizeFloat),
