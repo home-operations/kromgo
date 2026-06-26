@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.14.11](https://github.com/home-operations/kromgo/compare/0.14.10...0.14.11) (2026-06-26)
+
+
+### Features
+
+* add humanize value helper with SI metric prefixes ([#276](https://github.com/home-operations/kromgo/issues/276)) ([a55cbd1](https://github.com/home-operations/kromgo/commit/a55cbd1be1d8d39b6cf1e6c3a085f75d406d34f5))
+* **container:** update image mirror.gcr.io/curlimages/curl (8.20.0 → 8.21.0) ([#275](https://github.com/home-operations/kromgo/issues/275)) ([cb7863e](https://github.com/home-operations/kromgo/commit/cb7863ed66ebfafd93265eebb0a5c4b91f12bd5f))
+* **deps:** update dependency simple-icons (16.23.0 → 16.24.0) ([#270](https://github.com/home-operations/kromgo/issues/270)) ([9b49e38](https://github.com/home-operations/kromgo/commit/9b49e381523df6d7767dd6edf0e0e610367491fb))
+* **deps:** update module github.com/go-analyze/charts (v0.5.27 → v0.6.0) ([#274](https://github.com/home-operations/kromgo/issues/274)) ([bd53d31](https://github.com/home-operations/kromgo/commit/bd53d315220c4321528fc1e6dc4a7fc3a5c7d9b6))
+* **deps:** update module golang.org/x/image (v0.42.0 → v0.43.0) ([#266](https://github.com/home-operations/kromgo/issues/266)) ([96e4774](https://github.com/home-operations/kromgo/commit/96e4774ad67729d473d12d121a1e41e3316b4ac2))
+
+
+### Bug Fixes
+
+* **deps:** update module go.yaml.in/yaml/v4 (v4.0.0-rc.5 → v4.0.0-rc.6) ([#268](https://github.com/home-operations/kromgo/issues/268)) ([64a8a99](https://github.com/home-operations/kromgo/commit/64a8a9952a089acfd4f5b1dc5cb4647e3bb88808))
+
+
+### Miscellaneous Chores
+
+* add minimumGroupSize to Go and Node toolchain groups ([c90f50d](https://github.com/home-operations/kromgo/commit/c90f50dffac197786e8a5c3083ff19a64c78c5b7))
+* **mise:** Update tool oxfmt (0.55.0 → 0.56.0) ([#271](https://github.com/home-operations/kromgo/issues/271)) ([2597efd](https://github.com/home-operations/kromgo/commit/2597efd6376dc163f8d031b0d4ff4218ef3bd81e))
+* **mise:** Update tool zizmor (1.25.2 → 1.26.1) ([#269](https://github.com/home-operations/kromgo/issues/269)) ([f3daed1](https://github.com/home-operations/kromgo/commit/f3daed16bef5622cfcad52e464a7394cdee17b44))
+
 ## [0.14.10](https://github.com/home-operations/kromgo/compare/0.14.9...0.14.10) (2026-06-18)
 
 
