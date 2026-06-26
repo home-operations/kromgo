@@ -36,6 +36,42 @@ func humanizeBytes(f float64) string {
 	return trimOneDecimal(v) + byteUnits[i]
 }
 
+// SI prefix ladders for humanize (powers of 1000): metricPrefixes for |f| >= 1,
+// smallMetricPrefixes for |f| < 1.
+var (
+	metricPrefixes      = [...]string{"k", "M", "G", "T", "P", "E", "Z", "Y"}
+	smallMetricPrefixes = [...]string{"m", "u", "n", "p", "f", "a", "z", "y"}
+)
+
+// humanize formats f with SI metric prefixes and four significant figures, like
+// Prometheus's `humanize`: 93166031 -> "93.17M", 1000 -> "1k", 0.0000123 -> "12.3u".
+// Unit-less; 0/NaN/Inf degrade via humanizeFloat.
+func humanize(f float64) string {
+	if f == 0 || math.IsInf(f, 0) || math.IsNaN(f) {
+		return humanizeFloat(f) // "0" / "+Inf" / "-Inf" / "NaN"
+	}
+	if math.Abs(f) >= 1 {
+		prefix := ""
+		for _, p := range metricPrefixes {
+			if math.Abs(f) < 1000 {
+				break
+			}
+			prefix = p
+			f /= 1000
+		}
+		return fmt.Sprintf("%.4g%s", f, prefix)
+	}
+	prefix := ""
+	for _, p := range smallMetricPrefixes {
+		if math.Abs(f) >= 1 {
+			break
+		}
+		prefix = p
+		f *= 1000
+	}
+	return fmt.Sprintf("%.4g%s", f, prefix)
+}
+
 // humanizeCommas formats a number with comma thousands separators in the integer part,
 // e.g. 157121 -> "157,121", 1234.56 -> "1,234.56", -1234 -> "-1,234".
 func humanizeCommas(f float64) string {

@@ -291,6 +291,7 @@ humanize dependency, so the output is exactly as below):
 
 | Function                       | Example                           | Result    | Notes                                       |
 | ------------------------------ | --------------------------------- | --------- | ------------------------------------------- |
+| `humanize(result)`             | `humanize(93166031.0)`            | `93.17M`  | SI metric prefixes (powers of 1000), 4 sig figs, unit-less |
 | `humanizeBytes(result)`        | `humanizeBytes(1500000.0)`        | `1.5MB`   | SI decimal units (powers of 1000), no space |
 | `humanizeCommas(result)`       | `humanizeCommas(157121.0)`        | `157,121` | comma thousands grouping                    |
 | `humanizeFloat(result)`        | `humanizeFloat(2.50)`             | `2.5`     | plain decimal, trailing zeros stripped      |

@@ -96,3 +96,38 @@ func TestHumanizeDuration(t *testing.T) {
 		})
 	}
 }
+
+func TestHumanize(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		name string
+		in   float64
+		want string
+	}{
+		// |f| >= 1: scale down, metric prefixes, 4 sig figs.
+		{"plain", 999, "999"},
+		{"exact k", 1000, "1k"},
+		{"thousands", 1500, "1.5k"},
+		{"k four sig figs", 157121, "157.1k"},
+		{"exact M", 1000000, "1M"},
+		{"millions", 93166031, "93.17M"},
+		{"giga", 2147483648, "2.147G"},
+		// Prometheus parity: 999.999k rounds to "1000k", no carry.
+		{"rounds within prefix", 999999, "1000k"},
+		// |f| < 1: scale up, small prefixes.
+		{"milli", 0.5, "500m"},
+		{"micro", 0.0000123, "12.3u"},
+		{"negative", -1500, "-1.5k"},
+		// 0/NaN/Inf degrade cleanly (no "0y" / "NaNk").
+		{"zero", 0, "0"},
+		{"NaN", math.NaN(), "NaN"},
+		{"+Inf", math.Inf(1), "+Inf"},
+		{"-Inf", math.Inf(-1), "-Inf"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tc.want, humanize(tc.in))
+		})
+	}
+}
