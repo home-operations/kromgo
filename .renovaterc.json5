@@ -2,36 +2,4 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["local>home-operations/renovate-config"],
   postUpdateOptions: ["gomodTidy", "gomodUpdateImportPaths"],
-  // Regenerate the chart's committed docs after an upgrade so a value bump
-  // doesn't leave README.md / values.schema.json stale and fail generate-check.
-  // Runs the helm-docs + helm-schema binaries shipped in the Renovate container
-  // (mirrors the chart-doc half of `mise run generate`).
-  postUpgradeTasks: {
-    commands: [
-      "helm-docs --chart-search-root=charts --log-level=warn",
-      "helm-schema --chart-search-root charts/kromgo --skip-auto-generation required,additionalProperties --append-newline",
-    ],
-    fileFilters: ["charts/kromgo/README.md", "charts/kromgo/values.schema.json"],
-    executionMode: "branch",
-  },
-  packageRules: [
-    {
-      description: "Go Toolchain Group",
-      matchManagers: ["mise", "gomod"],
-      matchDepNames: ["go"],
-      matchFileNames: [".mise/config.toml", "go.mod"],
-      groupName: "Go toolchain",
-      groupSlug: "go-toolchain",
-      minimumGroupSize: 2,
-    },
-    {
-      description: "Node Toolchain Group",
-      matchManagers: ["mise"],
-      matchDepNames: ["node"],
-      matchFileNames: [".mise/config.toml"],
-      groupName: "Node toolchain",
-      groupSlug: "node-toolchain",
-      minimumGroupSize: 2,
-    },
-  ],
 }
