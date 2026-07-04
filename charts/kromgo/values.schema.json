@@ -329,7 +329,7 @@
       "type": "object"
     },
     "livenessProbe": {
-      "description": "Liveness probe.",
+      "description": "Liveness probe. Targets /healthz on the main http port, so it works regardless of the metrics toggle.",
       "properties": {
         "httpGet": {
           "properties": {
@@ -339,7 +339,7 @@
               "type": "string"
             },
             "port": {
-              "default": "health",
+              "default": "http",
               "title": "port",
               "type": "string"
             }
@@ -494,7 +494,7 @@
       "type": "object"
     },
     "readinessProbe": {
-      "description": "Readiness probe.",
+      "description": "Readiness probe. Targets /readyz on the main http port.",
       "properties": {
         "httpGet": {
           "properties": {
@@ -504,7 +504,7 @@
               "type": "string"
             },
             "port": {
-              "default": "health",
+              "default": "http",
               "title": "port",
               "type": "string"
             }
@@ -639,15 +639,21 @@
     },
     "service": {
       "properties": {
+        "metricsEnabled": {
+          "default": true,
+          "description": "Expose Prometheus metrics at /metrics on metricsPort (METRICS_ENABLED). Disabling removes the metrics listener, container port, and Service port entirely; health probes are unaffected (they target the http port).",
+          "title": "metricsEnabled",
+          "type": "boolean"
+        },
         "metricsPort": {
           "default": 8081,
-          "description": "Health + /metrics port.",
+          "description": "Metrics listen port (/metrics only), kept off the public port.",
           "title": "metricsPort",
           "type": "integer"
         },
         "port": {
           "default": 8080,
-          "description": "Badge / graph / gallery port.",
+          "description": "Badge / graph / gallery port; also serves the /healthz and /readyz probes.",
           "title": "port",
           "type": "integer"
         },

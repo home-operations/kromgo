@@ -63,6 +63,10 @@ spec:
             - name: SERVER_LOGGING
               value: "true"
             {{- end }}
+            {{- if not .Values.service.metricsEnabled }}
+            - name: METRICS_ENABLED
+              value: "false"
+            {{- end }}
             {{- with .Values.server.extraEnv }}
             {{- tpl (toYaml .) $ | nindent 12 }}
             {{- end }}
@@ -76,9 +80,11 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-            - name: health
+            {{- if .Values.service.metricsEnabled }}
+            - name: metrics
               containerPort: 8081
               protocol: TCP
+            {{- end }}
           livenessProbe:
             {{- tpl (toYaml .Values.livenessProbe) $ | nindent 12 }}
           readinessProbe:

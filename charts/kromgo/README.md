@@ -72,7 +72,7 @@ Kubernetes: `>=1.25.0-0`
 | ingress.enabled | bool | `false` | Expose the UI via an Ingress. |
 | ingress.hosts | list | `[{"host":"kromgo.example.com","paths":[{"path":"/","pathType":"Prefix"}]}]` | Ingress hosts and their paths. |
 | ingress.tls | list | `[]` | Ingress TLS configuration. |
-| livenessProbe | object | `{"httpGet":{"path":"/healthz","port":"health"},"initialDelaySeconds":10,"periodSeconds":20}` | Liveness probe. |
+| livenessProbe | object | `{"httpGet":{"path":"/healthz","port":"http"},"initialDelaySeconds":10,"periodSeconds":20}` | Liveness probe. Targets /healthz on the main http port, so it works regardless of the metrics toggle. |
 | monitoring.serviceMonitor.annotations | object | `{}` | ServiceMonitor annotations. |
 | monitoring.serviceMonitor.enabled | bool | `false` | Create a Prometheus Operator ServiceMonitor (requires its CRDs). |
 | monitoring.serviceMonitor.interval | string | `"30s"` | Scrape interval. |
@@ -86,7 +86,7 @@ Kubernetes: `>=1.25.0-0`
 | podAnnotations | object | `{}` | Annotations added to the pod. |
 | podLabels | object | `{}` | Labels added to the pod. |
 | podSecurityContext | object | `{"fsGroup":65532,"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532,"seccompProfile":{"type":"RuntimeDefault"}}` | Pod-level securityContext (runs as non-root uid/gid 65532 with the RuntimeDefault seccomp profile). |
-| readinessProbe | object | `{"httpGet":{"path":"/readyz","port":"health"},"initialDelaySeconds":5,"periodSeconds":10}` | Readiness probe. |
+| readinessProbe | object | `{"httpGet":{"path":"/readyz","port":"http"},"initialDelaySeconds":5,"periodSeconds":10}` | Readiness probe. Targets /readyz on the main http port. |
 | replicaCount | int | `1` | Number of kromgo replicas (it queries Prometheus per request and is stateless behind the Service). |
 | resources | object | `{}` | Pod resource requests/limits. |
 | secret.existingSecret | string | `""` | Existing Secret with a PROMETHEUS_URL key; takes precedence over the inline value below. |
@@ -97,8 +97,9 @@ Kubernetes: `>=1.25.0-0`
 | server.queryTimeout | string | `"30s"` | QUERY_TIMEOUT — bounds each outbound Prometheus query (Go duration). |
 | server.readTimeout | string | `"15s"` | SERVER_READ_TIMEOUT (Go duration); "0" disables the read deadline. |
 | server.writeTimeout | string | `"60s"` | SERVER_WRITE_TIMEOUT (Go duration, must exceed queryTimeout); "0" disables it. |
-| service.metricsPort | int | `8081` | Health + /metrics port. |
-| service.port | int | `8080` | Badge / graph / gallery port. |
+| service.metricsEnabled | bool | `true` | Expose Prometheus metrics at /metrics on metricsPort (METRICS_ENABLED). Disabling removes the metrics listener, container port, and Service port entirely; health probes are unaffected (they target the http port). |
+| service.metricsPort | int | `8081` | Metrics listen port (/metrics only), kept off the public port. |
+| service.port | int | `8080` | Badge / graph / gallery port; also serves the /healthz and /readyz probes. |
 | service.type | string | `"ClusterIP"` | Service type. |
 | serviceAccount.annotations | object | `{}` | Annotations for the ServiceAccount. |
 | serviceAccount.automount | bool | `false` | Automount the ServiceAccount API token (off by default: kromgo talks to Prometheus, not the cluster API). |

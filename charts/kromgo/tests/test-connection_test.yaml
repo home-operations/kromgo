@@ -20,4 +20,4 @@ tests:
           value: true
       - contains:
           path: spec.containers[0].args
-          content: http://RELEASE-NAME-kromgo:8081/readyz
+          content: http://RELEASE-NAME-kromgo:8080/readyz

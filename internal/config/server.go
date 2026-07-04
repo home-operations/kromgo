@@ -8,11 +8,18 @@ import (
 
 // ServerConfig holds runtime server settings sourced from environment variables.
 type ServerConfig struct {
-	ServerHost string `env:"SERVER_HOST" envDefault:"0.0.0.0"`
+	// Hosts default to empty (the unspecified address), binding IPv4-only,
+	// IPv6-only, and dual-stack clusters alike; an explicit 0.0.0.0 would be
+	// IPv4-only. The main port also serves /healthz and /readyz.
+	ServerHost string `env:"SERVER_HOST" envDefault:""`
 	ServerPort int    `env:"SERVER_PORT" envDefault:"8080"`
 
-	HealthHost string `env:"HEALTH_HOST" envDefault:"0.0.0.0"`
-	HealthPort int    `env:"HEALTH_PORT" envDefault:"8081"`
+	// MetricsEnabled exposes Prometheus metrics at /metrics on MetricsPort.
+	// Disabling it removes the metrics listener entirely; the health probe
+	// endpoints live on the main port and are unaffected.
+	MetricsEnabled bool   `env:"METRICS_ENABLED" envDefault:"true"`
+	MetricsHost    string `env:"METRICS_HOST" envDefault:""`
+	MetricsPort    int    `env:"METRICS_PORT" envDefault:"8081"`
 
 	// ServerReadTimeout / ServerWriteTimeout bound reading a request and writing its
 	// response on the public listener; the defaults harden against slow-client

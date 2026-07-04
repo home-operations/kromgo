@@ -28,18 +28,40 @@ func TestSecureHeaders(t *testing.T) {
 	assert.Contains(t, w.Header().Get("Content-Security-Policy"), "default-src 'none'")
 }
 
-func TestHealthMux(t *testing.T) {
+// TestWithHealth pins the pair standard: health probes ride the MAIN handler
+// (so the optional metrics listener can be disabled without breaking probes),
+// and the app still receives everything else.
+func TestWithHealth(t *testing.T) {
 	t.Parallel()
-	mux := healthMux()
-	for _, path := range []string{"/healthz", "/-/health", "/readyz", "/-/ready", "/metrics"} {
+	appHit := false
+	h := withHealth(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		appHit = true
+		w.WriteHeader(http.StatusOK)
+	}))
+	for _, path := range []string{"/healthz", "/readyz", "/-/health", "/-/ready"} {
 		t.Run(path, func(t *testing.T) {
-			t.Parallel()
 			req := httptest.NewRequest(http.MethodGet, path, nil)
 			w := httptest.NewRecorder()
-			mux.ServeHTTP(w, req)
+			h.ServeHTTP(w, req)
 			assert.Equal(t, http.StatusOK, w.Code)
+			assert.Equal(t, "OK", w.Body.String())
 		})
 	}
+	// Non-health paths fall through to the app.
+	h.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodGet, "/badges/x", nil))
+	assert.True(t, appHit)
+}
+
+// The metrics mux is metrics-only: health lives on the main port.
+func TestMetricsMux(t *testing.T) {
+	t.Parallel()
+	mux := metricsMux()
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/metrics", nil))
+	assert.Equal(t, http.StatusOK, w.Code)
+	w = httptest.NewRecorder()
+	mux.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/healthz", nil))
+	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
 func TestRecoverer_TurnsPanicInto500(t *testing.T) {
@@ -86,7 +108,8 @@ func TestRun_GracefulShutdown(t *testing.T) {
 	t.Parallel()
 	sc := config.ServerConfig{
 		ServerHost: "127.0.0.1", ServerPort: testutil.FreePort(t),
-		HealthHost: "127.0.0.1", HealthPort: testutil.FreePort(t),
+		MetricsEnabled: true,
+		MetricsHost:    "127.0.0.1", MetricsPort: testutil.FreePort(t),
 	}
 	app := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -96,8 +119,9 @@ func TestRun_GracefulShutdown(t *testing.T) {
 	done := make(chan error, 1)
 	go func() { done <- Run(ctx, sc, app) }()
 
-	// Wait until the health server is serving, then trigger graceful shutdown.
-	healthURL := fmt.Sprintf("http://127.0.0.1:%d/healthz", sc.HealthPort)
+	// Wait until the main server is serving (health rides it), then trigger
+	// graceful shutdown.
+	healthURL := fmt.Sprintf("http://127.0.0.1:%d/healthz", sc.ServerPort)
 	require.Eventually(t, func() bool {
 		resp, err := http.Get(healthURL)
 		if err != nil {

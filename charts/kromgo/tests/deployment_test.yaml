@@ -59,3 +59,28 @@ tests:
       - equal:
           path: spec.template.spec.automountServiceAccountToken
           value: false
+
+  # Pins the port standard: probes target the http port, and disabling metrics
+  # removes the metrics containerPort without touching them.
+  - it: keeps probes working when metrics are disabled
+    template: deployment.tpl
+    set:
+      service.metricsEnabled: false
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: metrics
+            containerPort: 8081
+            protocol: TCP
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: METRICS_ENABLED
+            value: "false"
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http
