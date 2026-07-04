@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.14.12](https://github.com/home-operations/kromgo/compare/0.14.11...0.14.12) (2026-07-03)
+
+
+### Features
+
+* **deps:** update module github.com/google/cel-go (v0.28.1 → v0.29.1) ([#284](https://github.com/home-operations/kromgo/issues/284)) ([683a3c6](https://github.com/home-operations/kromgo/commit/683a3c616be1b15b543b073d51ba2fea68c97c74))
+
+
+### Bug Fixes
+
+* **deps:** update dependency simple-icons (16.24.0 → 16.24.1) ([#280](https://github.com/home-operations/kromgo/issues/280)) ([cd07474](https://github.com/home-operations/kromgo/commit/cd07474d4e5f030576448c1e45024cefa4773c47))
+
+
+### Miscellaneous Chores
+
+* **mise:** Update tool node (24.17.0 → v24.18.0) ([#279](https://github.com/home-operations/kromgo/issues/279)) ([7722f4a](https://github.com/home-operations/kromgo/commit/7722f4a65706b325f35544e347459559a0cc0fe0))
+* **mise:** Update tool npm (11.17.0 → 11.18.0) ([#282](https://github.com/home-operations/kromgo/issues/282)) ([1c7d7e9](https://github.com/home-operations/kromgo/commit/1c7d7e997c6ccf33213875d0e4ad290bc16c6f32))
+* **mise:** Update tool oxfmt (0.56.0 → 0.57.0) ([#283](https://github.com/home-operations/kromgo/issues/283)) ([f819988](https://github.com/home-operations/kromgo/commit/f81998879a92e952b21060c7bf5fd9cdddf1bdbc))
+* **renovate:** inherit shared toolchain + chart-docs presets ([#277](https://github.com/home-operations/kromgo/issues/277)) ([56e0934](https://github.com/home-operations/kromgo/commit/56e0934730a489b5e87c792f7e75fc71bc3ffaf0))
+
 ## [0.14.11](https://github.com/home-operations/kromgo/compare/0.14.10...0.14.11) (2026-06-26)
 
 
