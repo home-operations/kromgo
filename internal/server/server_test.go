@@ -38,7 +38,7 @@ func TestWithHealth(t *testing.T) {
 		appHit = true
 		w.WriteHeader(http.StatusOK)
 	}))
-	for _, path := range []string{"/healthz", "/readyz", "/-/health", "/-/ready"} {
+	for _, path := range []string{"/healthz", "/readyz"} {
 		t.Run(path, func(t *testing.T) {
 			req := httptest.NewRequest(http.MethodGet, path, nil)
 			w := httptest.NewRecorder()

@@ -8,9 +8,8 @@ import (
 
 // healthPaths are the liveness/readiness endpoints, served on the MAIN port
 // (the org pair standard: /healthz = liveness, /readyz = readiness — aliases
-// here, kromgo has no serving condition beyond being up). The /-/ variants are
-// kept for backward compatibility.
-var healthPaths = []string{"/healthz", "/readyz", "/-/health", "/-/ready"}
+// here, kromgo has no serving condition beyond being up).
+var healthPaths = []string{"/healthz", "/readyz"}
 
 // withHealth overlays the health endpoints onto the application handler, so
 // probes work regardless of whether the optional metrics listener is enabled.
