@@ -132,15 +132,17 @@ func TestLoad_Style(t *testing.T) {
 func TestLoadServer_Defaults(t *testing.T) {
 	// Clear any inherited env so envDefault applies. t.Setenv registers the
 	// restore; os.Unsetenv then removes the var for the duration of the test.
-	for _, k := range []string{"SERVER_PORT", "HEALTH_PORT", "QUERY_TIMEOUT", "SERVER_LOGGING", "SERVER_READ_TIMEOUT", "SERVER_WRITE_TIMEOUT"} {
+	for _, k := range []string{"SERVER_PORT", "METRICS_ENABLED", "METRICS_PORT", "QUERY_TIMEOUT", "SERVER_LOGGING", "SERVER_READ_TIMEOUT", "SERVER_WRITE_TIMEOUT"} {
 		t.Setenv(k, "")
 		_ = os.Unsetenv(k)
 	}
 	sc, err := LoadServer()
 	require.NoError(t, err)
-	assert.Equal(t, "0.0.0.0", sc.ServerHost)
+	// Empty host = the unspecified address (dual-stack), not IPv4-only 0.0.0.0.
+	assert.Empty(t, sc.ServerHost)
 	assert.Equal(t, 8080, sc.ServerPort)
-	assert.Equal(t, 8081, sc.HealthPort)
+	assert.True(t, sc.MetricsEnabled)
+	assert.Equal(t, 8081, sc.MetricsPort)
 	assert.Equal(t, 30*time.Second, sc.QueryTimeout)
 	assert.Equal(t, 15*time.Second, sc.ServerReadTimeout, "read timeout defaults to a bounded value, not 0")
 	assert.Equal(t, 60*time.Second, sc.ServerWriteTimeout, "write timeout defaults above QueryTimeout")

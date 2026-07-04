@@ -29,21 +29,26 @@ const (
 func Run(ctx context.Context, sc config.ServerConfig, app http.Handler) error {
 	main := &http.Server{
 		Addr:              net.JoinHostPort(sc.ServerHost, strconv.Itoa(sc.ServerPort)),
-		Handler:           withMiddleware(app, sc),
+		Handler:           withMiddleware(withHealth(app), sc),
 		ReadHeaderTimeout: readHeaderTimeout,
 		ReadTimeout:       sc.ServerReadTimeout,
 		WriteTimeout:      sc.ServerWriteTimeout,
 		IdleTimeout:       idleTimeout,
 	}
-	health := &http.Server{
-		Addr:              net.JoinHostPort(sc.HealthHost, strconv.Itoa(sc.HealthPort)),
-		Handler:           injectLogger(recoverer(secureHeaders(healthMux()))),
-		ReadHeaderTimeout: readHeaderTimeout,
-		ReadTimeout:       sc.ServerReadTimeout,
-		WriteTimeout:      sc.ServerWriteTimeout,
-		IdleTimeout:       idleTimeout,
+	servers := []*http.Server{main}
+	// The metrics listener is metrics-only and fully optional: /healthz and
+	// /readyz ride the main server above, so disabling metrics removes this
+	// port without touching the probes.
+	if sc.MetricsEnabled {
+		servers = append(servers, &http.Server{
+			Addr:              net.JoinHostPort(sc.MetricsHost, strconv.Itoa(sc.MetricsPort)),
+			Handler:           injectLogger(recoverer(secureHeaders(metricsMux()))),
+			ReadHeaderTimeout: readHeaderTimeout,
+			ReadTimeout:       sc.ServerReadTimeout,
+			WriteTimeout:      sc.ServerWriteTimeout,
+			IdleTimeout:       idleTimeout,
+		})
 	}
-	servers := []*http.Server{main, health}
 
 	errCh := make(chan error, len(servers))
 	for _, s := range servers {

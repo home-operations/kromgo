@@ -37,11 +37,11 @@ graphs:
 `
 
 type harness struct {
-	t         *testing.T
-	baseURL   string
-	healthURL string
-	prom      *httptest.Server
-	cmd       *exec.Cmd
+	t          *testing.T
+	baseURL    string
+	metricsURL string
+	prom       *httptest.Server
+	cmd        *exec.Cmd
 }
 
 // start compiles kromgo, launches it against a mock Prometheus, and waits for readiness.
@@ -62,14 +62,14 @@ func start(t *testing.T) *harness {
 	require.NoError(t, os.WriteFile(configPath, []byte(configYAML), 0o600))
 
 	serverPort := testutil.FreePort(t)
-	healthPort := testutil.FreePort(t)
+	metricsPort := testutil.FreePort(t)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cmd := exec.CommandContext(ctx, bin, "-config", configPath)
 	cmd.Env = append(os.Environ(),
 		"PROMETHEUS_URL="+prom.URL,
 		fmt.Sprintf("SERVER_PORT=%d", serverPort),
-		fmt.Sprintf("HEALTH_PORT=%d", healthPort),
+		fmt.Sprintf("METRICS_PORT=%d", metricsPort),
 		"LOG_FORMAT=text",
 	)
 	cmd.Stdout = os.Stderr
@@ -77,11 +77,11 @@ func start(t *testing.T) *harness {
 	require.NoError(t, cmd.Start())
 
 	h := &harness{
-		t:         t,
-		baseURL:   fmt.Sprintf("http://127.0.0.1:%d", serverPort),
-		healthURL: fmt.Sprintf("http://127.0.0.1:%d", healthPort),
-		prom:      prom,
-		cmd:       cmd,
+		t:          t,
+		baseURL:    fmt.Sprintf("http://127.0.0.1:%d", serverPort),
+		metricsURL: fmt.Sprintf("http://127.0.0.1:%d", metricsPort),
+		prom:       prom,
+		cmd:        cmd,
 	}
 	t.Cleanup(func() {
 		cancel()
@@ -94,14 +94,20 @@ func start(t *testing.T) *harness {
 
 func (h *harness) waitReady() {
 	h.t.Helper()
+	// Health rides the main port (the pair standard); the metrics listener is
+	// separate, so require both before tests run.
+	up := func(url string) bool {
+		resp, err := http.Get(url)
+		if err != nil {
+			return false
+		}
+		_ = resp.Body.Close()
+		return resp.StatusCode == http.StatusOK
+	}
 	deadline := time.Now().Add(15 * time.Second)
 	for time.Now().Before(deadline) {
-		resp, err := http.Get(h.healthURL + "/healthz")
-		if err == nil {
-			_ = resp.Body.Close()
-			if resp.StatusCode == http.StatusOK {
-				return
-			}
+		if up(h.baseURL+"/healthz") && up(h.metricsURL+"/metrics") {
+			return
 		}
 		time.Sleep(100 * time.Millisecond)
 	}

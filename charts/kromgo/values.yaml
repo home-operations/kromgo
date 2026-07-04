@@ -182,9 +182,11 @@ securityContext:
 service:
   # -- Service type.
   type: ClusterIP
-  # -- Badge / graph / gallery port.
+  # -- Badge / graph / gallery port; also serves the /healthz and /readyz probes.
   port: 8080
-  # -- Health + /metrics port.
+  # -- Expose Prometheus metrics at /metrics on metricsPort (METRICS_ENABLED). Disabling removes the metrics listener, container port, and Service port entirely; health probes are unaffected (they target the http port).
+  metricsEnabled: true
+  # -- Metrics listen port (/metrics only), kept off the public port.
   metricsPort: 8081
 
 ingress:
@@ -251,18 +253,18 @@ resources: {}
 #   cpu: 10m
 #   memory: 64Mi
 
-# -- Liveness probe.
+# -- Liveness probe. Targets /healthz on the main http port, so it works regardless of the metrics toggle.
 livenessProbe:
   httpGet:
     path: /healthz
-    port: health
+    port: http
   initialDelaySeconds: 10
   periodSeconds: 20
-# -- Readiness probe.
+# -- Readiness probe. Targets /readyz on the main http port.
 readinessProbe:
   httpGet:
     path: /readyz
-    port: health
+    port: http
   initialDelaySeconds: 5
   periodSeconds: 10
 

@@ -30,7 +30,7 @@ spec:
         capabilities:
           drop:
             - ALL
-      # /readyz on the health/metrics port returns a static 200 (no Prometheus
+      # /readyz on the main http port returns a static 200 (no Prometheus
       # dependency), so this checks purely that the Service routes to a running,
       # listening pod. curl -f fails on a non-2xx (or a refused connection), failing
       # `helm test`; -sS stays quiet but still surfaces errors, and the body goes to
@@ -39,4 +39,4 @@ spec:
         - curl
       args:
         - -fsS
-        - http://{{ include "kromgo.fullname" . }}:{{ .Values.service.metricsPort }}/readyz
+        - http://{{ include "kromgo.fullname" . }}:{{ .Values.service.port }}/readyz

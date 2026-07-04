@@ -6,13 +6,29 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// healthMux serves Prometheus metrics and liveness/readiness probes.
-func healthMux() *http.ServeMux {
+// healthPaths are the liveness/readiness endpoints, served on the MAIN port
+// (the org pair standard: /healthz = liveness, /readyz = readiness — aliases
+// here, kromgo has no serving condition beyond being up). The /-/ variants are
+// kept for backward compatibility.
+var healthPaths = []string{"/healthz", "/readyz", "/-/health", "/-/ready"}
+
+// withHealth overlays the health endpoints onto the application handler, so
+// probes work regardless of whether the optional metrics listener is enabled.
+func withHealth(app http.Handler) http.Handler {
 	mux := http.NewServeMux()
-	mux.Handle("GET /metrics", promhttp.Handler())
-	for _, path := range []string{"/healthz", "/-/health", "/readyz", "/-/ready"} {
+	for _, path := range healthPaths {
 		mux.HandleFunc("GET "+path, ok)
 	}
+	mux.Handle("/", app)
+	return mux
+}
+
+// metricsMux serves Prometheus metrics on the dedicated, optional metrics
+// listener. Health probes are NOT served here — they live on the main port, so
+// this whole listener can be disabled without breaking probes.
+func metricsMux() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.Handle("GET /metrics", promhttp.Handler())
 	return mux
 }
 

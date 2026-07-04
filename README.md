@@ -74,7 +74,7 @@ onto it. Notable values (see [`charts/kromgo/values.yaml`](charts/kromgo/values.
 | `secret.prometheusUrl` / `.existingSecret` | inject `PROMETHEUS_URL` from a Secret when the URL carries credentials        |
 | `ingress.enabled`                          | expose the app via an Ingress                                                 |
 | `httpRoute.enabled`                        | expose the app via a Gateway API `HTTPRoute` (set `parentRefs` + `hostnames`) |
-| `monitoring.serviceMonitor.enabled`        | scrape `/metrics` on the health port (Prometheus Operator)                    |
+| `monitoring.serviceMonitor.enabled`        | scrape `/metrics` on the metrics port (Prometheus Operator)                   |
 
 Every value is documented in the chart's generated README,
 [`charts/kromgo/README.md`](charts/kromgo/README.md), built from
@@ -101,19 +101,20 @@ point your editor's YAML language server at it for inline completion and validat
 
 ### Environment variables
 
-| Variable               | Required | Default   | Description                                 |
-| ---------------------- | -------- | --------- | ------------------------------------------- |
-| `PROMETHEUS_URL`       | yes      | —         | URL of your Prometheus instance             |
-| `SERVER_HOST`          | no       | `0.0.0.0` | Host to bind the main server                |
-| `SERVER_PORT`          | no       | `8080`    | Port for the main server                    |
-| `HEALTH_HOST`          | no       | `0.0.0.0` | Host to bind the health server              |
-| `HEALTH_PORT`          | no       | `8081`    | Port for the health/metrics server          |
-| `SERVER_LOGGING`       | no       | `false`   | Enable HTTP request access logging          |
-| `SERVER_READ_TIMEOUT`  | no       | —         | HTTP read timeout (e.g. `5s`)               |
-| `SERVER_WRITE_TIMEOUT` | no       | —         | HTTP write timeout (e.g. `10s`)             |
-| `QUERY_TIMEOUT`        | no       | `30s`     | Timeout applied to each Prometheus query    |
-| `LOG_LEVEL`            | no       | `info`    | Log level: `debug`, `info`, `warn`, `error` |
-| `LOG_FORMAT`           | no       | `json`    | Log format: `json` or `text`                |
+| Variable               | Required | Default | Description                                  |
+| ---------------------- | -------- | ------- | -------------------------------------------- |
+| `PROMETHEUS_URL`       | yes      | —       | URL of your Prometheus instance              |
+| `SERVER_HOST`          | no       | _(all)_ | Bind host; empty = all families (dual-stack) |
+| `SERVER_PORT`          | no       | `8080`  | Port for the main server                     |
+| `METRICS_HOST`         | no       | _(all)_ | Bind host for the metrics listener           |
+| `METRICS_ENABLED`      | no       | `true`  | Serve Prometheus /metrics; off ⇒ no listener |
+| `METRICS_PORT`         | no       | `8081`  | Metrics listen port (/metrics only)          |
+| `SERVER_LOGGING`       | no       | `false` | Enable HTTP request access logging           |
+| `SERVER_READ_TIMEOUT`  | no       | —       | HTTP read timeout (e.g. `5s`)                |
+| `SERVER_WRITE_TIMEOUT` | no       | —       | HTTP write timeout (e.g. `10s`)              |
+| `QUERY_TIMEOUT`        | no       | `30s`   | Timeout applied to each Prometheus query     |
+| `LOG_LEVEL`            | no       | `info`  | Log level: `debug`, `info`, `warn`, `error`  |
+| `LOG_FORMAT`           | no       | `json`  | Log format: `json` or `text`                 |
 
 ### Defaults
 
@@ -289,14 +290,14 @@ Besides CEL's built-ins (arithmetic, comparisons, ternary `?:`, `in`) the enviro
 On top of those, these formatting helpers are available (hand-rolled — kromgo has no external
 humanize dependency, so the output is exactly as below):
 
-| Function                       | Example                           | Result    | Notes                                       |
-| ------------------------------ | --------------------------------- | --------- | ------------------------------------------- |
+| Function                       | Example                           | Result    | Notes                                                      |
+| ------------------------------ | --------------------------------- | --------- | ---------------------------------------------------------- |
 | `humanize(result)`             | `humanize(93166031.0)`            | `93.17M`  | SI metric prefixes (powers of 1000), 4 sig figs, unit-less |
-| `humanizeBytes(result)`        | `humanizeBytes(1500000.0)`        | `1.5MB`   | SI decimal units (powers of 1000), no space |
-| `humanizeCommas(result)`       | `humanizeCommas(157121.0)`        | `157,121` | comma thousands grouping                    |
-| `humanizeFloat(result)`        | `humanizeFloat(2.50)`             | `2.5`     | plain decimal, trailing zeros stripped      |
-| `humanizeDuration(result)`     | `humanizeDuration(9000.0)`        | `2h30m`   | **seconds** → compact time span             |
-| `humanizeDurationDays(result)` | `humanizeDurationDays(5961600.0)` | `69d`     | **seconds** → whole days, no roll-up        |
+| `humanizeBytes(result)`        | `humanizeBytes(1500000.0)`        | `1.5MB`   | SI decimal units (powers of 1000), no space                |
+| `humanizeCommas(result)`       | `humanizeCommas(157121.0)`        | `157,121` | comma thousands grouping                                   |
+| `humanizeFloat(result)`        | `humanizeFloat(2.50)`             | `2.5`     | plain decimal, trailing zeros stripped                     |
+| `humanizeDuration(result)`     | `humanizeDuration(9000.0)`        | `2h30m`   | **seconds** → compact time span                            |
+| `humanizeDurationDays(result)` | `humanizeDurationDays(5961600.0)` | `69d`     | **seconds** → whole days, no roll-up                       |
 
 `humanizeDuration` takes **seconds** (so it drops onto a `time() - created_ts` query directly) and
 adapts to the magnitude, emitting the up-to-three most-significant units — `90` → `1m30s`, `9000` →
@@ -522,10 +523,10 @@ When nothing is visible the gallery shows a short hint instead.
 
 ## Ports
 
-| Port   | Purpose                                                        |
-| ------ | -------------------------------------------------------------- |
-| `8080` | Main server — badge and graph endpoints                        |
-| `8081` | Health server — `/healthz`, `/readyz`, `/metrics` (Prometheus) |
+| Port   | Purpose                                                               |
+| ------ | --------------------------------------------------------------------- |
+| `8080` | Main server — badge/graph endpoints + `/healthz`, `/readyz` probes    |
+| `8081` | Metrics server — `/metrics` (Prometheus); optional, off ⇒ no listener |
 
 The health server's `/metrics` endpoint exposes Go runtime metrics plus
 `kromgo_requests_total{kind, id, format}` — a counter of requests handled, broken down by endpoint
@@ -678,8 +679,8 @@ kromgo is built to face the public web. Its posture:
 
 Operational guidance:
 
-- **Expose only the main port (`8080`).** The health port (`8081`) serves `/metrics` and probes —
-  keep it on the internal network.
+- **Expose only the main port (`8080`).** The metrics port (`8081`) serves `/metrics` —
+  keep it on the internal network. Health probes ride the main port.
 - **Terminate TLS and rate limit at your reverse proxy** (see [Rate limiting](#rate-limiting)).
 - Treat the config as trusted (it's operator-controlled). Fonts are compiled-in (never read from
   disk), and CEL expressions run sandboxed (no env/file/network access).
