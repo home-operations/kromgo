@@ -50,13 +50,13 @@ var graphExamples = []struct{ id, title, query string }{
 // handler and writes a self-contained, Tailwind-styled HTML page — each item shown
 // with the kromgo config that produced it. Run:
 //
-//	PROMETHEUS_URL=https://prom.example mise run gallery   # then open kromgo-gallery.html
+//	KROMGO_PROMETHEUS_URL=https://prom.example mise run gallery   # then open kromgo-gallery.html
 //
 // Queries are synthetic (vector()/time()), so it works against any Prometheus.
 func TestGallery(t *testing.T) {
-	url := os.Getenv("PROMETHEUS_URL")
+	url := os.Getenv("KROMGO_PROMETHEUS_URL")
 	if url == "" {
-		t.Skip("PROMETHEUS_URL not set")
+		t.Skip("KROMGO_PROMETHEUS_URL not set")
 	}
 	client, err := prometheus.New(url, 30*time.Second)
 	require.NoError(t, err)

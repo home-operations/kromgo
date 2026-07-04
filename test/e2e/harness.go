@@ -67,10 +67,10 @@ func start(t *testing.T) *harness {
 	ctx, cancel := context.WithCancel(context.Background())
 	cmd := exec.CommandContext(ctx, bin, "-config", configPath)
 	cmd.Env = append(os.Environ(),
-		"PROMETHEUS_URL="+prom.URL,
-		fmt.Sprintf("SERVER_PORT=%d", serverPort),
-		fmt.Sprintf("METRICS_PORT=%d", metricsPort),
-		"LOG_FORMAT=text",
+		"KROMGO_PROMETHEUS_URL="+prom.URL,
+		fmt.Sprintf("KROMGO_SERVER_PORT=%d", serverPort),
+		fmt.Sprintf("KROMGO_METRICS_PORT=%d", metricsPort),
+		"KROMGO_LOG_FORMAT=text",
 	)
 	cmd.Stdout = os.Stderr
 	cmd.Stderr = os.Stderr

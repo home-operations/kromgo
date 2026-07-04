@@ -22,7 +22,7 @@ tests:
           path: spec.template.spec.containers[0].image
           value: ghcr.io/home-operations/kromgo@sha256:deadbeef
 
-  - it: renders QUERY_TIMEOUT through tpl
+  - it: renders KROMGO_QUERY_TIMEOUT through tpl
     template: deployment.tpl
     set:
       server.queryTimeout: "{{ .Release.Name }}"
@@ -30,10 +30,10 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: QUERY_TIMEOUT
+            name: KROMGO_QUERY_TIMEOUT
             value: RELEASE-NAME
 
-  - it: omits SERVER_READ_TIMEOUT by default and emits it when set
+  - it: omits KROMGO_SERVER_READ_TIMEOUT by default and emits it when set
     template: deployment.tpl
     set:
       server.readTimeout: 5s
@@ -41,7 +41,7 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: SERVER_READ_TIMEOUT
+            name: KROMGO_SERVER_READ_TIMEOUT
             value: "5s"
 
   - it: omits SERVER_LOGGING by default
@@ -76,7 +76,7 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: METRICS_ENABLED
+            name: KROMGO_METRICS_ENABLED
             value: "false"
       - equal:
           path: spec.template.spec.containers[0].livenessProbe.httpGet.port

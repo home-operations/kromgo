@@ -46,7 +46,7 @@ func run() error {
 		return fmt.Errorf("loading server config: %w", err)
 	}
 
-	prom, err := prometheus.New(cmp.Or(os.Getenv("PROMETHEUS_URL"), cfg.Prometheus), sc.QueryTimeout)
+	prom, err := prometheus.New(cmp.Or(os.Getenv("KROMGO_PROMETHEUS_URL"), cfg.Prometheus), sc.QueryTimeout)
 	if err != nil {
 		return err
 	}

@@ -1,10 +1,10 @@
 //go:build integration
 
 // Package integration exercises kromgo against a real Prometheus.
-// It is skipped unless PROMETHEUS_URL is set, mirroring the org's env-gated
+// It is skipped unless KROMGO_PROMETHEUS_URL is set, mirroring the org's env-gated
 // integration pattern. Run with:
 //
-//	PROMETHEUS_URL=http://localhost:9090 go test -tags integration ./test/integration/...
+//	KROMGO_PROMETHEUS_URL=http://localhost:9090 go test -tags integration ./test/integration/...
 package integration
 
 import (
@@ -23,9 +23,9 @@ import (
 
 func newHandler(t *testing.T) *kromgo.Handler {
 	t.Helper()
-	url := os.Getenv("PROMETHEUS_URL")
+	url := os.Getenv("KROMGO_PROMETHEUS_URL")
 	if url == "" {
-		t.Skip("PROMETHEUS_URL not set; skipping integration test")
+		t.Skip("KROMGO_PROMETHEUS_URL not set; skipping integration test")
 	}
 
 	client, err := prometheus.New(url, 30*time.Second)

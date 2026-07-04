@@ -26,7 +26,7 @@ The root path `/` serves a **gallery** that previews every endpoint next to its 
 
 ```bash
 docker run -d \
-  -e PROMETHEUS_URL=http://prometheus:9090 \
+  -e KROMGO_PROMETHEUS_URL=http://prometheus:9090 \
   -v /path/to/config.yaml:/config/config.yaml \
   -p 8080:8080 \
   ghcr.io/home-operations/kromgo:latest
@@ -45,7 +45,7 @@ services:
     kromgo:
         image: ghcr.io/home-operations/kromgo:latest
         environment:
-            PROMETHEUS_URL: http://prometheus:9090
+            KROMGO_PROMETHEUS_URL: http://prometheus:9090
         volumes:
             - ./config.yaml:/config/config.yaml:ro
         ports:
@@ -71,7 +71,7 @@ onto it. Notable values (see [`charts/kromgo/values.yaml`](charts/kromgo/values.
 | `config.prometheus`                        | Prometheus URL kromgo queries                                                 |
 | `config.badges` / `config.graphs`          | the endpoint definitions (same schema as the config file)                     |
 | `existingConfigMap`                        | mount a ConfigMap you manage elsewhere instead of rendering `config`          |
-| `secret.prometheusUrl` / `.existingSecret` | inject `PROMETHEUS_URL` from a Secret when the URL carries credentials        |
+| `secret.prometheusUrl` / `.existingSecret` | inject `KROMGO_PROMETHEUS_URL` from a Secret when the URL carries credentials |
 | `ingress.enabled`                          | expose the app via an Ingress                                                 |
 | `httpRoute.enabled`                        | expose the app via a Gateway API `HTTPRoute` (set `parentRefs` + `hostnames`) |
 | `monitoring.serviceMonitor.enabled`        | scrape `/metrics` on the metrics port (Prometheus Operator)                   |
@@ -101,20 +101,20 @@ point your editor's YAML language server at it for inline completion and validat
 
 ### Environment variables
 
-| Variable               | Required | Default | Description                                  |
-| ---------------------- | -------- | ------- | -------------------------------------------- |
-| `PROMETHEUS_URL`       | yes      | —       | URL of your Prometheus instance              |
-| `SERVER_HOST`          | no       | _(all)_ | Bind host; empty = all families (dual-stack) |
-| `SERVER_PORT`          | no       | `8080`  | Port for the main server                     |
-| `METRICS_HOST`         | no       | _(all)_ | Bind host for the metrics listener           |
-| `METRICS_ENABLED`      | no       | `true`  | Serve Prometheus /metrics; off ⇒ no listener |
-| `METRICS_PORT`         | no       | `8081`  | Metrics listen port (/metrics only)          |
-| `SERVER_LOGGING`       | no       | `false` | Enable HTTP request access logging           |
-| `SERVER_READ_TIMEOUT`  | no       | —       | HTTP read timeout (e.g. `5s`)                |
-| `SERVER_WRITE_TIMEOUT` | no       | —       | HTTP write timeout (e.g. `10s`)              |
-| `QUERY_TIMEOUT`        | no       | `30s`   | Timeout applied to each Prometheus query     |
-| `LOG_LEVEL`            | no       | `info`  | Log level: `debug`, `info`, `warn`, `error`  |
-| `LOG_FORMAT`           | no       | `json`  | Log format: `json` or `text`                 |
+| Variable                      | Required | Default | Description                                  |
+| ----------------------------- | -------- | ------- | -------------------------------------------- |
+| `KROMGO_PROMETHEUS_URL`       | yes      | —       | URL of your Prometheus instance              |
+| `KROMGO_SERVER_HOST`          | no       | _(all)_ | Bind host; empty = all families (dual-stack) |
+| `KROMGO_SERVER_PORT`          | no       | `8080`  | Port for the main server                     |
+| `KROMGO_METRICS_HOST`         | no       | _(all)_ | Bind host for the metrics listener           |
+| `KROMGO_METRICS_ENABLED`      | no       | `true`  | Serve Prometheus /metrics; off ⇒ no listener |
+| `KROMGO_METRICS_PORT`         | no       | `8081`  | Metrics listen port (/metrics only)          |
+| `KROMGO_SERVER_LOGGING`       | no       | `false` | Enable HTTP request access logging           |
+| `KROMGO_SERVER_READ_TIMEOUT`  | no       | —       | HTTP read timeout (e.g. `5s`)                |
+| `KROMGO_SERVER_WRITE_TIMEOUT` | no       | —       | HTTP write timeout (e.g. `10s`)              |
+| `KROMGO_QUERY_TIMEOUT`        | no       | `30s`   | Timeout applied to each Prometheus query     |
+| `KROMGO_LOG_LEVEL`            | no       | `info`  | Log level: `debug`, `info`, `warn`, `error`  |
+| `KROMGO_LOG_FORMAT`           | no       | `json`  | Log format: `json` or `text`                 |
 
 ### Defaults
 
@@ -670,9 +670,9 @@ kromgo is built to face the public web. Its posture:
 - **The gallery loads nothing external.** Its JS/CSS are embedded and served from `/assets/`, so the
   page ships a tightened-but-still-locked-down CSP (`script-src 'self'`, no `unsafe-inline`/`unsafe-eval`,
   no CDN). The Host header used to build snippet URLs is validated before use.
-- **Bounded work.** Each Prometheus query is bounded by `QUERY_TIMEOUT` (default 30s); graph windows
+- **Bounded work.** Each Prometheus query is bounded by `KROMGO_QUERY_TIMEOUT` (default 30s); graph windows
   are capped by `maxDuration` and image dimensions are clamped. A 10s `ReadHeaderTimeout` guards
-  against Slowloris; tune `SERVER_READ_TIMEOUT`/`SERVER_WRITE_TIMEOUT` to your proxy.
+  against Slowloris; tune `KROMGO_SERVER_READ_TIMEOUT`/`KROMGO_SERVER_WRITE_TIMEOUT` to your proxy.
 - **Minimal image.** A `scratch` image with just the static binary and a CA bundle (kromgo dials
   Prometheus over HTTPS) — no shell, package manager, or writable filesystem. It pins no user; set one
   via your Kubernetes `securityContext` or `docker run --user`. Images are cosign-signed (below).
@@ -738,9 +738,9 @@ Release tags drop the `v` prefix (e.g. `0.12.0`, not `v0.12.0`); pin image tags 
 
 This fork began as [kashalls/kromgo](https://github.com/kashalls/kromgo). Beyond the schema changes
 above, note: the image moved to `ghcr.io/home-operations/kromgo`; the badge font is no longer bundled
-(an embedded font is used, with `defaults.badge.font` to override); `LOG_FORMAT=test` was corrected
-to `LOG_FORMAT=text`; built-in rate limiting was removed (see [Rate limiting](#rate-limiting)); and a
-missing `PROMETHEUS_URL` now fails fast instead of starting degraded.
+(an embedded font is used, with `defaults.badge.font` to override); `KROMGO_LOG_FORMAT=test` was corrected
+to `KROMGO_LOG_FORMAT=text`; built-in rate limiting was removed (see [Rate limiting](#rate-limiting)); and a
+missing `KROMGO_PROMETHEUS_URL` now fails fast instead of starting degraded.
 
 ## Community
 

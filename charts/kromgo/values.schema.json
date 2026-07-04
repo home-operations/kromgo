@@ -541,17 +541,17 @@
       "type": "object"
     },
     "secret": {
-      "description": "Sensitive Prometheus URL — use when the endpoint embeds basic-auth credentials\nyou don't want in the ConfigMap. Provide it inline and a Secret is created, or\npoint at an existing Secret with a PROMETHEUS_URL key. Leave empty to use the\nplain `config.prometheus` above.",
+      "description": "Sensitive Prometheus URL — use when the endpoint embeds basic-auth credentials\nyou don't want in the ConfigMap. Provide it inline and a Secret is created, or\npoint at an existing Secret with a KROMGO_PROMETHEUS_URL key. Leave empty to use the\nplain `config.prometheus` above.",
       "properties": {
         "existingSecret": {
           "default": "",
-          "description": "Existing Secret with a PROMETHEUS_URL key; takes precedence over the inline value below.",
+          "description": "Existing Secret with a KROMGO_PROMETHEUS_URL key; takes precedence over the inline value below.",
           "title": "existingSecret",
           "type": "string"
         },
         "prometheusUrl": {
           "default": "",
-          "description": "PROMETHEUS_URL — sensitive Prometheus URL; overrides config.prometheus when set.",
+          "description": "KROMGO_PROMETHEUS_URL — sensitive Prometheus URL; overrides config.prometheus when set.",
           "title": "prometheusUrl",
           "type": "string"
         }
@@ -598,7 +598,7 @@
       "type": "object"
     },
     "server": {
-      "description": "Server tuning — kromgo's runtime environment variables (distinct from the\nconfig file above). SERVER_HOST/PORT and HEALTH_HOST/PORT are fixed by the\nchart (the Service and probes are wired to 8080 / 8081) and not exposed here.",
+      "description": "Server tuning — kromgo's runtime environment variables (distinct from the\nconfig file above). KROMGO_SERVER_PORT and KROMGO_METRICS_PORT are fixed by the\nchart (the Service and probes are wired to 8080 / 8081) and not exposed here.",
       "properties": {
         "extraEnv": {
           "description": "Extra raw env vars merged into the container (advanced), e.g. GOMEMLIMIT.",
@@ -610,25 +610,25 @@
         },
         "logging": {
           "default": false,
-          "description": "SERVER_LOGGING — per-request access logging.",
+          "description": "KROMGO_SERVER_LOGGING — per-request access logging.",
           "title": "logging",
           "type": "boolean"
         },
         "queryTimeout": {
           "default": "30s",
-          "description": "QUERY_TIMEOUT — bounds each outbound Prometheus query (Go duration).",
+          "description": "KROMGO_QUERY_TIMEOUT — bounds each outbound Prometheus query (Go duration).",
           "title": "queryTimeout",
           "type": "string"
         },
         "readTimeout": {
           "default": "15s",
-          "description": "SERVER_READ_TIMEOUT (Go duration); \"0\" disables the read deadline.",
+          "description": "KROMGO_SERVER_READ_TIMEOUT (Go duration); \"0\" disables the read deadline.",
           "title": "readTimeout",
           "type": "string"
         },
         "writeTimeout": {
           "default": "60s",
-          "description": "SERVER_WRITE_TIMEOUT (Go duration, must exceed queryTimeout); \"0\" disables it.",
+          "description": "KROMGO_SERVER_WRITE_TIMEOUT (Go duration, must exceed queryTimeout); \"0\" disables it.",
           "title": "writeTimeout",
           "type": "string"
         }
@@ -641,7 +641,7 @@
       "properties": {
         "metricsEnabled": {
           "default": true,
-          "description": "Expose Prometheus metrics at /metrics on metricsPort (METRICS_ENABLED). Disabling removes the metrics listener, container port, and Service port entirely; health probes are unaffected (they target the http port).",
+          "description": "Expose Prometheus metrics at /metrics on metricsPort (KROMGO_METRICS_ENABLED). Disabling removes the metrics listener, container port, and Service port entirely; health probes are unaffected (they target the http port).",
           "title": "metricsEnabled",
           "type": "boolean"
         },
