@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.15.0](https://github.com/home-operations/kromgo/compare/0.14.12...0.15.0) (2026-07-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop the legacy /-/health and /-/ready aliases ([#288](https://github.com/home-operations/kromgo/issues/288))
+* prefix all environment variables with KROMGO_ ([#286](https://github.com/home-operations/kromgo/issues/286))
+* serve health on the main port; metrics port becomes fully optional ([#285](https://github.com/home-operations/kromgo/issues/285))
+
+### Features
+
+* drop the legacy /-/health and /-/ready aliases ([#288](https://github.com/home-operations/kromgo/issues/288)) ([c6fe382](https://github.com/home-operations/kromgo/commit/c6fe382c911df12eddcdd7b34828a907e20494f1))
+* prefix all environment variables with KROMGO_ ([#286](https://github.com/home-operations/kromgo/issues/286)) ([340c62d](https://github.com/home-operations/kromgo/commit/340c62dae2261599f98e312d877df18fbfa31330))
+* serve health on the main port; metrics port becomes fully optional ([#285](https://github.com/home-operations/kromgo/issues/285)) ([948cab4](https://github.com/home-operations/kromgo/commit/948cab4e1cab29b9acafb7e4697dfe8911a8a54b))
+
 ## [0.14.12](https://github.com/home-operations/kromgo/compare/0.14.11...0.14.12) (2026-07-03)
 
 
