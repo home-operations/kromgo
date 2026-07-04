@@ -132,7 +132,7 @@ func TestLoad_Style(t *testing.T) {
 func TestLoadServer_Defaults(t *testing.T) {
 	// Clear any inherited env so envDefault applies. t.Setenv registers the
 	// restore; os.Unsetenv then removes the var for the duration of the test.
-	for _, k := range []string{"SERVER_PORT", "METRICS_ENABLED", "METRICS_PORT", "QUERY_TIMEOUT", "SERVER_LOGGING", "SERVER_READ_TIMEOUT", "SERVER_WRITE_TIMEOUT"} {
+	for _, k := range []string{"KROMGO_SERVER_PORT", "KROMGO_METRICS_ENABLED", "KROMGO_METRICS_PORT", "KROMGO_QUERY_TIMEOUT", "KROMGO_SERVER_LOGGING", "KROMGO_SERVER_READ_TIMEOUT", "KROMGO_SERVER_WRITE_TIMEOUT"} {
 		t.Setenv(k, "")
 		_ = os.Unsetenv(k)
 	}
@@ -150,11 +150,11 @@ func TestLoadServer_Defaults(t *testing.T) {
 }
 
 func TestLoadServer_Overrides(t *testing.T) {
-	t.Setenv("SERVER_PORT", "9000")
-	t.Setenv("QUERY_TIMEOUT", "5s")
-	t.Setenv("SERVER_LOGGING", "true")
-	t.Setenv("SERVER_READ_TIMEOUT", "5s")
-	t.Setenv("SERVER_WRITE_TIMEOUT", "0") // 0 disables the deadline
+	t.Setenv("KROMGO_SERVER_PORT", "9000")
+	t.Setenv("KROMGO_QUERY_TIMEOUT", "5s")
+	t.Setenv("KROMGO_SERVER_LOGGING", "true")
+	t.Setenv("KROMGO_SERVER_READ_TIMEOUT", "5s")
+	t.Setenv("KROMGO_SERVER_WRITE_TIMEOUT", "0") // 0 disables the deadline
 	sc, err := LoadServer()
 	require.NoError(t, err)
 	assert.Equal(t, 9000, sc.ServerPort)

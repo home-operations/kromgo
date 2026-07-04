@@ -50,7 +50,7 @@ existingConfigMap: ""
 config:
   # Prometheus base URL kromgo queries. If the URL embeds credentials, leave this
   # empty and use `secret.prometheusUrl` (or `secret.existingSecret`) so it stays
-  # out of the ConfigMap — the Secret is injected as PROMETHEUS_URL, which
+  # out of the ConfigMap — the Secret is injected as KROMGO_PROMETHEUS_URL, which
   # overrides this value.
 
   # -- Prometheus base URL kromgo queries; use `secret.prometheusUrl` instead when it embeds credentials.
@@ -107,20 +107,20 @@ config:
   #     valueExpr: string(int(result)) + " pods"
 
 # Server tuning — kromgo's runtime environment variables (distinct from the
-# config file above). SERVER_HOST/PORT and HEALTH_HOST/PORT are fixed by the
+# config file above). KROMGO_SERVER_PORT and KROMGO_METRICS_PORT are fixed by the
 # chart (the Service and probes are wired to 8080 / 8081) and not exposed here.
 server:
-  # -- QUERY_TIMEOUT — bounds each outbound Prometheus query (Go duration).
+  # -- KROMGO_QUERY_TIMEOUT — bounds each outbound Prometheus query (Go duration).
   queryTimeout: 30s
-  # SERVER_READ_TIMEOUT / SERVER_WRITE_TIMEOUT — Go durations bounding request read
+  # KROMGO_SERVER_READ_TIMEOUT / KROMGO_SERVER_WRITE_TIMEOUT — Go durations bounding request read
   # and response write on the public listener. The defaults harden against slow-client
   # (Slowloris-style) connection holding; set either to "0" to disable its deadline.
 
-  # -- SERVER_READ_TIMEOUT (Go duration); "0" disables the read deadline.
+  # -- KROMGO_SERVER_READ_TIMEOUT (Go duration); "0" disables the read deadline.
   readTimeout: 15s
-  # -- SERVER_WRITE_TIMEOUT (Go duration, must exceed queryTimeout); "0" disables it.
+  # -- KROMGO_SERVER_WRITE_TIMEOUT (Go duration, must exceed queryTimeout); "0" disables it.
   writeTimeout: 60s
-  # -- SERVER_LOGGING — per-request access logging.
+  # -- KROMGO_SERVER_LOGGING — per-request access logging.
   logging: false
   # -- Extra raw env vars merged into the container (advanced), e.g. GOMEMLIMIT.
   extraEnv: []
@@ -129,15 +129,15 @@ server:
 
 # Sensitive Prometheus URL — use when the endpoint embeds basic-auth credentials
 # you don't want in the ConfigMap. Provide it inline and a Secret is created, or
-# point at an existing Secret with a PROMETHEUS_URL key. Leave empty to use the
+# point at an existing Secret with a KROMGO_PROMETHEUS_URL key. Leave empty to use the
 # plain `config.prometheus` above.
 secret:
-  # Pre-existing Secret with a PROMETHEUS_URL key. Takes precedence over the
+  # Pre-existing Secret with a KROMGO_PROMETHEUS_URL key. Takes precedence over the
   # inline value below.
 
-  # -- Existing Secret with a PROMETHEUS_URL key; takes precedence over the inline value below.
+  # -- Existing Secret with a KROMGO_PROMETHEUS_URL key; takes precedence over the inline value below.
   existingSecret: ""
-  # -- PROMETHEUS_URL — sensitive Prometheus URL; overrides config.prometheus when set.
+  # -- KROMGO_PROMETHEUS_URL — sensitive Prometheus URL; overrides config.prometheus when set.
   prometheusUrl: ""
 
 serviceAccount:
@@ -184,7 +184,7 @@ service:
   type: ClusterIP
   # -- Badge / graph / gallery port; also serves the /healthz and /readyz probes.
   port: 8080
-  # -- Expose Prometheus metrics at /metrics on metricsPort (METRICS_ENABLED). Disabling removes the metrics listener, container port, and Service port entirely; health probes are unaffected (they target the http port).
+  # -- Expose Prometheus metrics at /metrics on metricsPort (KROMGO_METRICS_ENABLED). Disabling removes the metrics listener, container port, and Service port entirely; health probes are unaffected (they target the http port).
   metricsEnabled: true
   # -- Metrics listen port (/metrics only), kept off the public port.
   metricsPort: 8081

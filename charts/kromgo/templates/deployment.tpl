@@ -49,32 +49,35 @@ spec:
           securityContext:
             {{- tpl (toYaml .Values.securityContext) $ | nindent 12 }}
           env:
-            - name: QUERY_TIMEOUT
+            - name: KROMGO_QUERY_TIMEOUT
               value: {{ tpl .Values.server.queryTimeout $ | quote }}
             {{- with .Values.server.readTimeout }}
-            - name: SERVER_READ_TIMEOUT
+            - name: KROMGO_SERVER_READ_TIMEOUT
               value: {{ tpl . $ | quote }}
             {{- end }}
             {{- with .Values.server.writeTimeout }}
-            - name: SERVER_WRITE_TIMEOUT
+            - name: KROMGO_SERVER_WRITE_TIMEOUT
               value: {{ tpl . $ | quote }}
             {{- end }}
             {{- if .Values.server.logging }}
-            - name: SERVER_LOGGING
+            - name: KROMGO_SERVER_LOGGING
               value: "true"
             {{- end }}
             {{- if not .Values.service.metricsEnabled }}
-            - name: METRICS_ENABLED
+            - name: KROMGO_METRICS_ENABLED
               value: "false"
             {{- end }}
             {{- with .Values.server.extraEnv }}
             {{- tpl (toYaml .) $ | nindent 12 }}
             {{- end }}
           {{- with (include "kromgo.secretName" .) }}
-          # PROMETHEUS_URL — overrides config.prometheus when present.
+          # The Secret key stays PROMETHEUS_URL (so existing Secrets keep
+          # working); the prefix injects it as KROMGO_PROMETHEUS_URL, which
+          # overrides config.prometheus when present.
           envFrom:
             - secretRef:
                 name: {{ . }}
+              prefix: KROMGO_
           {{- end }}
           ports:
             - name: http

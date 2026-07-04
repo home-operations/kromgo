@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-// Init configures the default slog logger from LOG_LEVEL (debug/info/warn/error,
-// default info) and LOG_FORMAT (text or json, default json).
+// Init configures the default slog logger from KROMGO_LOG_LEVEL (debug/info/warn/error,
+// default info) and KROMGO_LOG_FORMAT (text or json, default json).
 func Init() {
-	slog.SetDefault(slog.New(newHandler(os.Stdout, os.Getenv("LOG_LEVEL"), os.Getenv("LOG_FORMAT"))))
+	slog.SetDefault(slog.New(newHandler(os.Stdout, os.Getenv("KROMGO_LOG_LEVEL"), os.Getenv("KROMGO_LOG_FORMAT"))))
 }
 
 // newHandler builds a JSON (default) or text slog handler at the given level.

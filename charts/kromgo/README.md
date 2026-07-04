@@ -89,15 +89,15 @@ Kubernetes: `>=1.25.0-0`
 | readinessProbe | object | `{"httpGet":{"path":"/readyz","port":"http"},"initialDelaySeconds":5,"periodSeconds":10}` | Readiness probe. Targets /readyz on the main http port. |
 | replicaCount | int | `1` | Number of kromgo replicas (it queries Prometheus per request and is stateless behind the Service). |
 | resources | object | `{}` | Pod resource requests/limits. |
-| secret.existingSecret | string | `""` | Existing Secret with a PROMETHEUS_URL key; takes precedence over the inline value below. |
-| secret.prometheusUrl | string | `""` | PROMETHEUS_URL — sensitive Prometheus URL; overrides config.prometheus when set. |
+| secret.existingSecret | string | `""` | Existing Secret with a KROMGO_PROMETHEUS_URL key; takes precedence over the inline value below. |
+| secret.prometheusUrl | string | `""` | KROMGO_PROMETHEUS_URL — sensitive Prometheus URL; overrides config.prometheus when set. |
 | securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | Container securityContext (no privilege escalation, read-only root filesystem, drops ALL capabilities). |
 | server.extraEnv | list | `[]` | Extra raw env vars merged into the container (advanced), e.g. GOMEMLIMIT. |
-| server.logging | bool | `false` | SERVER_LOGGING — per-request access logging. |
-| server.queryTimeout | string | `"30s"` | QUERY_TIMEOUT — bounds each outbound Prometheus query (Go duration). |
-| server.readTimeout | string | `"15s"` | SERVER_READ_TIMEOUT (Go duration); "0" disables the read deadline. |
-| server.writeTimeout | string | `"60s"` | SERVER_WRITE_TIMEOUT (Go duration, must exceed queryTimeout); "0" disables it. |
-| service.metricsEnabled | bool | `true` | Expose Prometheus metrics at /metrics on metricsPort (METRICS_ENABLED). Disabling removes the metrics listener, container port, and Service port entirely; health probes are unaffected (they target the http port). |
+| server.logging | bool | `false` | KROMGO_SERVER_LOGGING — per-request access logging. |
+| server.queryTimeout | string | `"30s"` | KROMGO_QUERY_TIMEOUT — bounds each outbound Prometheus query (Go duration). |
+| server.readTimeout | string | `"15s"` | KROMGO_SERVER_READ_TIMEOUT (Go duration); "0" disables the read deadline. |
+| server.writeTimeout | string | `"60s"` | KROMGO_SERVER_WRITE_TIMEOUT (Go duration, must exceed queryTimeout); "0" disables it. |
+| service.metricsEnabled | bool | `true` | Expose Prometheus metrics at /metrics on metricsPort (KROMGO_METRICS_ENABLED). Disabling removes the metrics listener, container port, and Service port entirely; health probes are unaffected (they target the http port). |
 | service.metricsPort | int | `8081` | Metrics listen port (/metrics only), kept off the public port. |
 | service.port | int | `8080` | Badge / graph / gallery port; also serves the /healthz and /readyz probes. |
 | service.type | string | `"ClusterIP"` | Service type. |
