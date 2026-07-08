@@ -285,27 +285,26 @@ checksum = "sha256:0ae68406b42d7725661da979b1403ec9926da205c6770827f33aac9d8f26e
 url = "https://nodejs.org/dist/v24.18.0/node-v24.18.0-win-x64.zip"
 
 [[tools.npm]]
-version = "11.18.0"
+version = "12.0.0"
 backend = "aqua:npm/cli"
 
 [tools.npm."platforms.linux-arm64"]
-url = "https://registry.npmjs.org/npm/-/npm-11.18.0.tgz"
+url = "https://registry.npmjs.org/npm/-/npm-12.0.0.tgz"
 
 [tools.npm."platforms.linux-arm64-musl"]
-url = "https://registry.npmjs.org/npm/-/npm-11.18.0.tgz"
+url = "https://registry.npmjs.org/npm/-/npm-12.0.0.tgz"
 
 [tools.npm."platforms.linux-x64"]
-url = "https://registry.npmjs.org/npm/-/npm-11.18.0.tgz"
+url = "https://registry.npmjs.org/npm/-/npm-12.0.0.tgz"
 
 [tools.npm."platforms.linux-x64-musl"]
-url = "https://registry.npmjs.org/npm/-/npm-11.18.0.tgz"
+url = "https://registry.npmjs.org/npm/-/npm-12.0.0.tgz"
 
 [tools.npm."platforms.macos-arm64"]
-checksum = "blake3:c92efa20f653b0179689b4e788f0a31e48fe2c855bb9a4d52066d5cdaf7aae0e"
-url = "https://registry.npmjs.org/npm/-/npm-11.18.0.tgz"
+url = "https://registry.npmjs.org/npm/-/npm-12.0.0.tgz"
 
 [tools.npm."platforms.macos-x64"]
-url = "https://registry.npmjs.org/npm/-/npm-11.18.0.tgz"
+url = "https://registry.npmjs.org/npm/-/npm-12.0.0.tgz"
 
 [[tools.oxfmt]]
 version = "0.58.0"
