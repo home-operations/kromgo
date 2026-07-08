@@ -7,7 +7,7 @@
 # `mise tasks` lists tasks; `mise run <task>` runs one.
 
 [tools]
-go = "1.26.4"
+go = "1.26.5"
 golangci-lint = "2.12.2"
 helm = "4.2.2"
 cosign = "3.1.1"
