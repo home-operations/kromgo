@@ -231,6 +231,9 @@
             "$ref": "#/$defs/Graph"
           },
           "type": "array"
+        },
+        "favicon": {
+          "type": "string"
         }
       },
       "additionalProperties": false,

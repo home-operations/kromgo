@@ -41,6 +41,9 @@ var galleryTmpl = template.Must(template.New("gallery").Parse(`<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>kromgo</title>
+{{- if .HasFavicon}}
+<link rel="icon" href="/favicon.ico">
+{{- end}}
 <link rel="stylesheet" href="/assets/github-markdown.css">
 <link rel="stylesheet" href="/assets/gallery.css">
 </head>
@@ -79,6 +82,9 @@ var landingTmpl = template.Must(template.New("landing").Parse(`<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>kromgo</title>
+{{- if .HasFavicon}}
+<link rel="icon" href="/favicon.ico">
+{{- end}}
 <link rel="stylesheet" href="/assets/gallery.css">
 </head>
 <body>
@@ -94,8 +100,15 @@ var landingTmpl = template.Must(template.New("landing").Parse(`<!DOCTYPE html>
 // galleryView is the gallery template's data: visible badges and graphs as
 // copy-pasteable Markdown snippets, badges first.
 type galleryView struct {
-	Badges []galleryItem
-	Graphs []galleryItem
+	HasFavicon bool
+	Badges     []galleryItem
+	Graphs     []galleryItem
+}
+
+// landingView is the minimal landing template's data (used when gallery.enabled
+// is false).
+type landingView struct {
+	HasFavicon bool
 }
 
 // galleryItem is one endpoint rendered as a Markdown image snippet.
@@ -114,12 +127,13 @@ func (h *Handler) index(w http.ResponseWriter, r *http.Request) {
 	header.Set("Cache-Control", "no-store")
 
 	if !firstSet(true, h.cfg.Gallery.Enabled) {
-		_ = landingTmpl.Execute(w, nil)
+		_ = landingTmpl.Execute(w, landingView{HasFavicon: len(h.faviconData) > 0})
 		return
 	}
 
 	base := baseURL(r)
 	view := galleryView{
+		HasFavicon: len(h.faviconData) > 0,
 		Badges: galleryItems(base, "badges", h.cfg.Badges, h.cfg.Defaults.Badge.Gallery.Hidden,
 			func(b config.Badge) (string, string, *bool) {
 				return b.ID, displayTitle(b.Title, b.ID), b.Gallery.Hidden
@@ -158,6 +172,15 @@ func assetsHandler() http.Handler {
 		w.Header().Set("Cache-Control", "public, max-age=3600")
 		fileServer.ServeHTTP(w, r)
 	}))
+}
+
+// favicon serves the configured Favicon at GET /favicon.ico. Mux only registers
+// this route when Favicon is set, so this is never reached otherwise. Cached
+// like /assets/: it only changes when the binary restarts with new config.
+func (h *Handler) favicon(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", h.faviconType)
+	w.Header().Set("Cache-Control", "public, max-age=3600")
+	_, _ = w.Write(h.faviconData)
 }
 
 // markdownItem builds a Markdown image snippet for an endpoint, e.g.
