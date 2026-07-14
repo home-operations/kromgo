@@ -307,7 +307,7 @@ url = "https://registry.npmjs.org/npm/-/npm-12.0.1.tgz"
 url = "https://registry.npmjs.org/npm/-/npm-12.0.1.tgz"
 
 [[tools.oxfmt]]
-version = "0.58.0"
+version = "0.59.0"
 backend = "npm:oxfmt"
 
 [[tools.yq]]
