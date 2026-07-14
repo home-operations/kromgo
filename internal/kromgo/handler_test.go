@@ -403,3 +403,43 @@ func TestAssetsRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Header().Get("Content-Type"), "javascript")
 }
+
+// A 1x1 transparent PNG, base64-encoded.
+const testFaviconPNG = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+
+func TestFaviconRoute(t *testing.T) {
+	t.Parallel()
+	cfg := baseConfig()
+	cfg.Favicon = testFaviconPNG
+	srv := mockProm(t, "0", nil)
+	h := newHandlerForTest(t, cfg, srv.URL)
+
+	w := promtest.Get(t, h.Mux(), "/favicon.ico")
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, "image/png", w.Header().Get("Content-Type"))
+	assert.Contains(t, w.Header().Get("Cache-Control"), "max-age=")
+	assert.NotEmpty(t, w.Body.Bytes())
+}
+
+func TestFaviconRoute_UnsetIs404(t *testing.T) {
+	t.Parallel()
+	srv := mockProm(t, "0", nil)
+	h := newHandlerForTest(t, baseConfig(), srv.URL) // no Favicon configured
+
+	w := promtest.Get(t, h.Mux(), "/favicon.ico")
+
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
+func TestNew_InvalidFaviconFailsFast(t *testing.T) {
+	t.Parallel()
+	cfg := baseConfig()
+	cfg.Favicon = "not-valid-base64!!!"
+	srv := mockProm(t, "1", nil)
+	client, err := prometheus.New(srv.URL, 0)
+	require.NoError(t, err)
+
+	_, err = New(cfg, client)
+	assert.Error(t, err)
+}

@@ -62,6 +62,9 @@ config:
     # -- Preview every endpoint at "/" with copy-paste Markdown; false serves a minimal landing page.
     enabled: true
 
+  # -- Base64-encoded PNG/GIF/ICO image served at GET /favicon.ico. Empty (default) serves no favicon.
+  favicon: ""
+
   # Cache-Control headers sent with badge/graph responses. One policy applies to
   # every endpoint.
   cache:

@@ -189,6 +189,28 @@ func TestIndexHandler_NoEndpoints_ShowsEmptyState(t *testing.T) {
 	assert.Contains(t, body, "No endpoints to show")
 }
 
+func TestIndexHandler_FaviconLink(t *testing.T) {
+	t.Parallel()
+
+	withoutFavicon := newTestHandler(config.KromgoConfig{Badges: []config.Badge{{ID: "cpu"}}})
+	assert.NotContains(t, getIndex(withoutFavicon).Body.String(), `rel="icon"`)
+
+	withFavicon := newTestHandler(config.KromgoConfig{Badges: []config.Badge{{ID: "cpu"}}})
+	withFavicon.faviconData = []byte("fake-icon-bytes")
+	assert.Contains(t, getIndex(withFavicon).Body.String(), `<link rel="icon" href="/favicon.ico">`)
+}
+
+func TestIndexHandler_GalleryDisabled_FaviconLink(t *testing.T) {
+	t.Parallel()
+
+	h := newTestHandler(config.KromgoConfig{Gallery: config.Gallery{Enabled: new(false)}})
+	h.faviconData = []byte("fake-icon-bytes")
+	body := getIndex(h).Body.String()
+
+	assert.Contains(t, body, `class="landing"`)
+	assert.Contains(t, body, `<link rel="icon" href="/favicon.ico">`)
+}
+
 func TestIndexHandler_GalleryDisabled_ShowsLanding(t *testing.T) {
 	t.Parallel()
 	h := newTestHandler(config.KromgoConfig{

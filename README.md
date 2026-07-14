@@ -474,6 +474,21 @@ badges:
 
 When nothing is visible the gallery shows a short hint instead.
 
+## Favicon
+
+kromgo is self-contained (see [Gallery](#gallery) above) and ships no default favicon, so
+`GET /favicon.ico` 404s unless you configure one. Set a top-level `favicon` to a base64-encoded PNG,
+GIF, or ICO image and kromgo serves it at `/favicon.ico` and links it from both the gallery and the
+landing page:
+
+```yaml
+favicon: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+```
+
+The Content-Type is detected from the decoded bytes, so no separate `favicon` MIME/format field is
+needed — an unsupported or malformed value fails at startup like any other config error (see
+[Configuration](#configuration)).
+
 ## API reference
 
 | Route              | Default response        | Variants                                                           |
@@ -482,6 +497,7 @@ When nothing is visible the gallery shows a short hint instead.
 | `GET /graphs/{id}` | SVG chart (`?theme=…`)  | `?format=png` → PNG image · `?format=json` → time-series data      |
 | `GET /`            | HTML gallery            | landing page when `gallery.enabled: false`                         |
 | `GET /assets/…`    | Embedded gallery JS/CSS |                                                                    |
+| `GET /favicon.ico` | The configured favicon  | 404 when `favicon` is unset (see [Favicon](#favicon))               |
 
 **`/badges/{id}`** (default SVG):
 

@@ -20,12 +20,14 @@ const (
 
 // Handler serves badge and graph endpoints backed by Prometheus queries.
 type Handler struct {
-	cfg    config.KromgoConfig
-	cache  cachePolicy
-	badges map[string]*resolvedBadge
-	graphs map[string]*resolvedGraph
-	prom   *prometheus.Client
-	gen    *badgeRenderer
+	cfg         config.KromgoConfig
+	cache       cachePolicy
+	badges      map[string]*resolvedBadge
+	graphs      map[string]*resolvedGraph
+	prom        *prometheus.Client
+	gen         *badgeRenderer
+	faviconData []byte
+	faviconType string
 }
 
 // New builds a Handler from config and a Prometheus client. Per-endpoint CEL
@@ -33,6 +35,11 @@ type Handler struct {
 // at startup rather than on a request.
 func New(cfg config.KromgoConfig, prom *prometheus.Client) (*Handler, error) {
 	gen, err := newBadgeRenderer(cfg.Defaults.Badge)
+	if err != nil {
+		return nil, err
+	}
+
+	faviconData, faviconType, err := cfg.DecodeFavicon()
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +67,10 @@ func New(cfg config.KromgoConfig, prom *prometheus.Client) (*Handler, error) {
 		graphs[g.ID] = rg
 	}
 
-	return &Handler{cfg: cfg, cache: resolveCache(cfg.Cache), badges: badges, graphs: graphs, prom: prom, gen: gen}, nil
+	return &Handler{
+		cfg: cfg, cache: resolveCache(cfg.Cache), badges: badges, graphs: graphs, prom: prom, gen: gen,
+		faviconData: faviconData, faviconType: faviconType,
+	}, nil
 }
 
 // Mux returns the application router: the index page and per-type endpoints.
@@ -68,6 +78,9 @@ func (h *Handler) Mux() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /{$}", h.index)
 	mux.Handle("GET /assets/", assetsHandler())
+	if len(h.faviconData) > 0 {
+		mux.HandleFunc("GET /favicon.ico", h.favicon)
+	}
 	mux.HandleFunc("GET /badges/{id}", h.serveBadge)
 	mux.HandleFunc("GET /graphs/{id}", h.serveGraph)
 	return mux

@@ -129,6 +129,43 @@ func TestLoad_Style(t *testing.T) {
 	assert.Contains(t, err.Error(), "unknown style")
 }
 
+func TestLoad_Favicon(t *testing.T) {
+	t.Parallel()
+
+	// A 1x1 transparent PNG, base64-encoded.
+	const pngB64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+
+	cfg, err := Load(writeConfig(t, "favicon: "+pngB64+"\n"))
+	require.NoError(t, err)
+	data, contentType, err := cfg.DecodeFavicon()
+	require.NoError(t, err)
+	assert.Equal(t, "image/png", contentType)
+	assert.NotEmpty(t, data)
+
+	// Unset favicon decodes to nothing, no error.
+	cfg, err = Load(writeConfig(t, "badges: []\n"))
+	require.NoError(t, err)
+	data, contentType, err = cfg.DecodeFavicon()
+	require.NoError(t, err)
+	assert.Empty(t, contentType)
+	assert.Nil(t, data)
+}
+
+func TestLoad_FaviconInvalidBase64(t *testing.T) {
+	t.Parallel()
+	_, err := Load(writeConfig(t, "favicon: not-valid-base64!!!\n"))
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "favicon")
+}
+
+func TestLoad_FaviconUnsupportedType(t *testing.T) {
+	t.Parallel()
+	// Plain text decodes fine as base64 but isn't a supported image type.
+	_, err := Load(writeConfig(t, "favicon: aGVsbG8gd29ybGQ=\n"))
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "unsupported content type")
+}
+
 func TestLoadServer_Defaults(t *testing.T) {
 	// Clear any inherited env so envDefault applies. t.Setenv registers the
 	// restore; os.Unsetenv then removes the var for the duration of the test.

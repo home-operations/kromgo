@@ -45,6 +45,7 @@ Kubernetes: `>=1.25.0-0`
 | config.cache.enabled | bool | `true` | Send Cache-Control headers on badge/graph responses. |
 | config.cache.maxAge | int | `300` | max-age + s-maxage in seconds (ignored when cache is disabled). |
 | config.defaults | object | `{}` | Defaults applied to every endpoint, each overridable per badge/graph. |
+| config.favicon | string | `""` | Base64-encoded PNG/GIF/ICO image served at GET /favicon.ico. Empty (default) serves no favicon. |
 | config.gallery.enabled | bool | `true` | Preview every endpoint at "/" with copy-paste Markdown; false serves a minimal landing page. |
 | config.graphs | list | `[]` | Time-series endpoints served at /graphs/{id}. |
 | config.prometheus | string | `"http://prometheus-operated.monitoring.svc.cluster.local:9090"` | Prometheus base URL kromgo queries; use `secret.prometheusUrl` instead when it embeds credentials. |

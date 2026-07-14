@@ -3,7 +3,9 @@
 package config
 
 import (
+	"encoding/base64"
 	"fmt"
+	"net/http"
 	"os"
 	"regexp"
 
@@ -23,6 +25,36 @@ type KromgoConfig struct {
 	Defaults   Defaults `yaml:"defaults,omitempty" json:"defaults,omitempty"`
 	Badges     []Badge  `yaml:"badges,omitempty" json:"badges,omitempty"`
 	Graphs     []Graph  `yaml:"graphs,omitempty" json:"graphs,omitempty"`
+	// Favicon is base64-encoded image data served at GET /favicon.ico. Accepts PNG,
+	// GIF, or ICO bytes — the Content-Type is detected from the decoded data, the
+	// same way the standard library sniffs an upload. Empty (default) serves no
+	// favicon; the route falls through to kromgo's normal 404.
+	Favicon string `yaml:"favicon,omitempty" json:"favicon,omitempty"`
+}
+
+// validFaviconTypes are the Content-Types DecodeFavicon accepts, as detected by
+// http.DetectContentType — the image formats browsers actually request as a favicon.
+var validFaviconTypes = map[string]bool{
+	"image/png":    true,
+	"image/x-icon": true,
+	"image/gif":    true,
+}
+
+// DecodeFavicon decodes and validates Favicon, returning the decoded bytes and
+// detected Content-Type. Returns a nil slice and empty string when Favicon is unset.
+func (c KromgoConfig) DecodeFavicon() ([]byte, string, error) {
+	if c.Favicon == "" {
+		return nil, "", nil
+	}
+	data, err := base64.StdEncoding.DecodeString(c.Favicon)
+	if err != nil {
+		return nil, "", fmt.Errorf("favicon: invalid base64: %w", err)
+	}
+	contentType := http.DetectContentType(data)
+	if !validFaviconTypes[contentType] {
+		return nil, "", fmt.Errorf("favicon: unsupported content type %q (want a PNG, GIF, or ICO image)", contentType)
+	}
+	return data, contentType, nil
 }
 
 // Cache configures the Cache-Control headers kromgo sends with badge and graph
@@ -275,6 +307,9 @@ func (c KromgoConfig) validate() error {
 	}
 	if s := c.Defaults.Badge.Style; s != "" && !ValidStyle[s] {
 		return fmt.Errorf("defaults.badge.style: unknown style %q", s)
+	}
+	if _, _, err := c.DecodeFavicon(); err != nil {
+		return err
 	}
 	if err := validateEndpoints(c.Badges, "badge"); err != nil {
 		return err

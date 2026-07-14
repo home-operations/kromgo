@@ -44,6 +44,12 @@
           "title": "defaults",
           "type": "object"
         },
+        "favicon": {
+          "default": "",
+          "description": "Base64-encoded PNG/GIF/ICO image served at GET /favicon.ico. Empty (default) serves no favicon.",
+          "title": "favicon",
+          "type": "string"
+        },
         "gallery": {
           "description": "The \"/\" gallery previews every endpoint with copy-paste Markdown. Defaults to\nenabled; set false to serve a minimal landing page instead.",
           "properties": {
