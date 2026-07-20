@@ -42,14 +42,14 @@ Then embed or query a badge:
 
 ```yaml
 services:
-    kromgo:
-        image: ghcr.io/home-operations/kromgo:latest
-        environment:
-            KROMGO_PROMETHEUS_URL: http://prometheus:9090
-        volumes:
-            - ./config.yaml:/config/config.yaml:ro
-        ports:
-            - "8080:8080"
+  kromgo:
+    image: ghcr.io/home-operations/kromgo:latest
+    environment:
+      KROMGO_PROMETHEUS_URL: http://prometheus:9090
+    volumes:
+      - ./config.yaml:/config/config.yaml:ro
+    ports:
+      - "8080:8080"
 ```
 
 ### Kubernetes (Helm)
@@ -91,9 +91,9 @@ config file there (or pass `-config /path/to/config.yaml`).
 
 ```yaml
 badges:
-    - id: node_cpu_usage
-      query: "round(cluster:node_cpu:ratio_rate5m * 100, 0.1)"
-      valueExpr: string(result) + "%"
+  - id: node_cpu_usage
+    query: "round(cluster:node_cpu:ratio_rate5m * 100, 0.1)"
+    valueExpr: string(result) + "%"
 ```
 
 A JSON Schema for editor validation is published at [config.schema.json](./config.schema.json);
@@ -123,21 +123,21 @@ same-named field. All keys are optional.
 
 ```yaml
 defaults:
-    badge:
-        font: dejavu-sans # dejavu-sans (default, shields.io-style), dejavu-sans-bold, comic-neue, comic-neue-bold
-        size: 11 # badge font size in points
-        style: flat # flat (default), flat-square, plastic, or for-the-badge
-        gallery:
-            hidden: false # list badges in the gallery (default); true hides them
-    graph:
-        maxDuration: 1h # cap on a graph's requested window ("0" = unlimited)
-        width: 600 # image width in px
-        height: 200 # image height in px
-        legend: true # show the series legend
-        theme: light # color theme — see Themes below
-        font: dejavu-sans # text font — see Themes below
-        gallery:
-            hidden: false # list graphs in the gallery (default); true hides them
+  badge:
+    font: dejavu-sans # dejavu-sans (default, shields.io-style), dejavu-sans-bold, comic-neue, comic-neue-bold
+    size: 11 # badge font size in points
+    style: flat # flat (default), flat-square, plastic, or for-the-badge
+    gallery:
+      hidden: false # list badges in the gallery (default); true hides them
+  graph:
+    maxDuration: 1h # cap on a graph's requested window ("0" = unlimited)
+    width: 600 # image width in px
+    height: 200 # image height in px
+    legend: true # show the series legend
+    theme: light # color theme — see Themes below
+    font: dejavu-sans # text font — see Themes below
+    gallery:
+      hidden: false # list graphs in the gallery (default); true hides them
 ```
 
 The gallery page itself is toggled separately at the top level — see [Gallery](#gallery).
@@ -171,12 +171,12 @@ bold weight is the configured face's bold companion). It pairs naturally with an
 
 ```yaml
 badges:
-    - id: kubernetes
-      query: kubernetes_build_info
-      valueExpr: labels[?"git_version"].orValue("unknown")
-      style: for-the-badge
-      icon: si:kubernetes
-      colorExpr: '"blue"'
+  - id: kubernetes
+    query: kubernetes_build_info
+    valueExpr: labels[?"git_version"].orValue("unknown")
+    style: for-the-badge
+    icon: si:kubernetes
+    colorExpr: '"blue"'
 ```
 
 #### Icons
@@ -195,14 +195,14 @@ separate (colored) icon segment with no text, set `title: " "` (a single space).
 
 ```yaml
 badges:
-    - id: nodes
-      query: count(kube_node_info)
-      icon: mdi:server-outline
-      title: Nodes
-    - id: version
-      query: kubernetes_build_info
-      icon: si:kubernetes
-      title: Kubernetes
+  - id: nodes
+    query: count(kube_node_info)
+    icon: mdi:server-outline
+    title: Nodes
+  - id: version
+    query: kubernetes_build_info
+    icon: si:kubernetes
+    title: Kubernetes
 ```
 
 Both **entire** sets are embedded in the binary — no network or disk access at runtime — so any
@@ -221,15 +221,15 @@ comparing against an earlier period. The window is `end = now - offset`, `start 
 
 ```yaml
 badges:
-    - id: cpu_prev_week_avg
-      type: range
-      query: "cluster:node_cpu:ratio_rate5m * 100"
-      range:
-          last: "7d" # window length (required)
-          offset: "7d" # shift the window back; here: 14d ago .. 7d ago (default: ends now)
-          step: "1h" # resolution (default: last/100, min 1m)
-          reduce: avg # last (default), first, avg, min, max, sum
-      valueExpr: string(result) + "%"
+  - id: cpu_prev_week_avg
+    type: range
+    query: "cluster:node_cpu:ratio_rate5m * 100"
+    range:
+      last: "7d" # window length (required)
+      offset: "7d" # shift the window back; here: 14d ago .. 7d ago (default: ends now)
+      step: "1h" # resolution (default: last/100, min 1m)
+      reduce: avg # last (default), first, avg, min, max, sum
+    valueExpr: string(result) + "%"
 ```
 
 `reduce` collapses each series to one value; non-finite samples (NaN/Inf) are skipped.
@@ -256,27 +256,27 @@ same way shields.io does, so a light custom `colorExpr` stays readable. Every ba
 
 ```yaml
 badges:
-    # numeric value with a unit + threshold coloring
-    - id: cpu
-      query: "round(avg(...) * 100, 0.1)"
-      valueExpr: string(result) + "%"
-      colorExpr: 'result < 35 ? "green" : result < 75 ? "orange" : "red"'
+  # numeric value with a unit + threshold coloring
+  - id: cpu
+    query: "round(avg(...) * 100, 0.1)"
+    valueExpr: string(result) + "%"
+    colorExpr: 'result < 35 ? "green" : result < 75 ? "orange" : "red"'
 
-    # value taken from a label, falling back if it's absent
-    - id: version
-      query: 'label_replace(build_info, "v", "$1", "version", "v(.+)")'
-      valueExpr: labels[?"v"].orValue("unknown")
+  # value taken from a label, falling back if it's absent
+  - id: version
+    query: 'label_replace(build_info, "v", "$1", "version", "v(.+)")'
+    valueExpr: labels[?"v"].orValue("unknown")
 
-    # guard a possibly-NaN ratio (e.g. divide-by-zero) before formatting
-    - id: hit_ratio
-      query: cache_hits / (cache_hits + cache_misses)
-      valueExpr: 'math.isNaN(result) ? "n/a" : humanizeFloat(math.round(result * 100.0)) + "%"'
+  # guard a possibly-NaN ratio (e.g. divide-by-zero) before formatting
+  - id: hit_ratio
+    query: cache_hits / (cache_hits + cache_misses)
+    valueExpr: 'math.isNaN(result) ? "n/a" : humanizeFloat(math.round(result * 100.0)) + "%"'
 
-    # enum → text + color
-    - id: ceph_health
-      query: ceph_health_status
-      valueExpr: 'result == 0.0 ? "Healthy" : result == 1.0 ? "Warning" : "Critical"'
-      colorExpr: 'result == 0.0 ? "green" : result == 1.0 ? "orange" : "red"'
+  # enum → text + color
+  - id: ceph_health
+    query: ceph_health_status
+    valueExpr: 'result == 0.0 ? "Healthy" : result == 1.0 ? "Warning" : "Critical"'
+    colorExpr: 'result == 0.0 ? "green" : result == 1.0 ? "orange" : "red"'
 ```
 
 Besides CEL's built-ins (arithmetic, comparisons, ternary `?:`, `in`) the environment enables:
@@ -357,11 +357,11 @@ opt-in to expose range data for that query — there is no separate enable flag.
 
 ```yaml
 graphs:
-    - id: node_cpu_usage
-      query: "cluster:node_cpu:ratio_rate5m * 100"
-      maxDuration: "30d"
-      width: 800
-      theme: catppuccin-mocha
+  - id: node_cpu_usage
+    query: "cluster:node_cpu:ratio_rate5m * 100"
+    maxDuration: "30d"
+    width: 800
+    theme: catppuccin-mocha
 ```
 
 By default the y-axis labels use the chart library's numeric formatting, which can show fractional
@@ -373,11 +373,11 @@ keeps the raw numbers.
 
 ```yaml
 graphs:
-    - id: cluster_pod_count_graph
-      title: Running Pods
-      query: sum(kube_pod_status_phase{phase="Running"})
-      maxDuration: 7d
-      valueExpr: string(int(result)) + " pods" # integer ticks; drop the suffix for bare integers
+  - id: cluster_pod_count_graph
+    title: Running Pods
+    query: sum(kube_pod_status_phase{phase="Running"})
+    maxDuration: 7d
+    valueExpr: string(int(result)) + " pods" # integer ticks; drop the suffix for bare integers
 ```
 
 For axis context, pin the range with `yMin`/`yMax` (e.g. `yMin: 0`, `yMax: 100` for a percentage)
@@ -387,13 +387,13 @@ and they render for the first series only:
 
 ```yaml
 graphs:
-    - id: cluster_cpu_graph
-      title: CPU Usage
-      query: avg(cluster:node_cpu:ratio_rate5m) * 100
-      valueExpr: string(int(result)) + "%"
-      yMin: 0
-      yMax: 100
-      markLine: [average]
+  - id: cluster_cpu_graph
+    title: CPU Usage
+    query: avg(cluster:node_cpu:ratio_rate5m) * 100
+    valueExpr: string(int(result)) + "%"
+    yMin: 0
+    yMax: 100
+    markLine: [average]
 ```
 
 The time window is chosen by these query parameters:
@@ -453,7 +453,7 @@ unaffected):
 
 ```yaml
 gallery:
-    enabled: false
+  enabled: false
 ```
 
 **Which endpoints appear.** Every endpoint is listed by default. Hide one with a per-endpoint
@@ -462,14 +462,14 @@ gallery:
 
 ```yaml
 defaults:
-    badge:
-        gallery:
-            hidden: true # hide badges from the gallery by default…
+  badge:
+    gallery:
+      hidden: true # hide badges from the gallery by default…
 badges:
-    - id: cpu
-      query: "..."
-      gallery:
-          hidden: false # …but list this one
+  - id: cpu
+    query: "..."
+    gallery:
+      hidden: false # …but list this one
 ```
 
 When nothing is visible the gallery shows a short hint instead.
@@ -499,12 +499,12 @@ When nothing is visible the gallery shows a short hint instead.
 
 ```json
 {
-    "id": "node_cpu_usage",
-    "title": "CPU",
-    "value": "17.5%",
-    "color": "green",
-    "result": 17.5,
-    "labels": {}
+  "id": "node_cpu_usage",
+  "title": "CPU",
+  "value": "17.5%",
+  "color": "green",
+  "result": 17.5,
+  "labels": {}
 }
 ```
 
@@ -512,12 +512,12 @@ When nothing is visible the gallery shows a short hint instead.
 
 ```json
 {
-    "id": "node_cpu_usage",
-    "title": "CPU",
-    "start": 1702578219,
-    "end": 1702664619,
-    "step": 60,
-    "series": [{ "labels": { "instance": "node-1" }, "data": [{ "t": 1702578219, "v": 17.5 }] }]
+  "id": "node_cpu_usage",
+  "title": "CPU",
+  "start": 1702578219,
+  "end": 1702664619,
+  "step": 60,
+  "series": [{ "labels": { "instance": "node-1" }, "data": [{ "t": 1702578219, "v": 17.5 }] }]
 }
 ```
 
@@ -574,18 +574,18 @@ HTTP filter (100 requests/minute per listener):
 
 ```yaml
 http_filters:
-    - name: envoy.filters.http.local_ratelimit
-      typed_config:
-          "@type": type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
-          stat_prefix: kromgo_rate_limiter
-          token_bucket:
-              max_tokens: 100
-              tokens_per_fill: 100
-              fill_interval: 60s
-          filter_enabled:
-              default_value: { numerator: 100, denominator: HUNDRED }
-          filter_enforced:
-              default_value: { numerator: 100, denominator: HUNDRED }
+  - name: envoy.filters.http.local_ratelimit
+    typed_config:
+      "@type": type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
+      stat_prefix: kromgo_rate_limiter
+      token_bucket:
+        max_tokens: 100
+        tokens_per_fill: 100
+        fill_interval: 60s
+      filter_enabled:
+        default_value: { numerator: 100, denominator: HUNDRED }
+      filter_enforced:
+        default_value: { numerator: 100, denominator: HUNDRED }
 ```
 
 **Traefik v3** — a `rateLimit` middleware attached to the router (dynamic file config; the
@@ -593,18 +593,18 @@ Kubernetes `Middleware` CRD takes the same `rateLimit` spec):
 
 ```yaml
 http:
-    middlewares:
-        kromgo-ratelimit:
-            rateLimit:
-                average: 10
-                burst: 20
-                period: 1s
-    routers:
-        kromgo:
-            rule: Host(`kromgo.example.com`)
-            service: kromgo
-            middlewares:
-                - kromgo-ratelimit
+  middlewares:
+    kromgo-ratelimit:
+      rateLimit:
+        average: 10
+        burst: 20
+        period: 1s
+  routers:
+    kromgo:
+      rule: Host(`kromgo.example.com`)
+      service: kromgo
+      middlewares:
+        - kromgo-ratelimit
 ```
 
 ## Caching
@@ -616,8 +616,8 @@ top level under `cache:` and is **enabled by default**.
 
 ```yaml
 cache:
-    enabled: true # default; false sends no-store so nothing caches the badge
-    maxAge: 300 # max-age + s-maxage in seconds (default 300); ignored when disabled
+  enabled: true # default; false sends no-store so nothing caches the badge
+  maxAge: 300 # max-age + s-maxage in seconds (default 300); ignored when disabled
 ```
 
 - **`enabled: true` (default)** — kromgo sends `Cache-Control: public, max-age=<maxAge>, s-maxage=<maxAge>`
