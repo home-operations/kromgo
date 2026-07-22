@@ -7,30 +7,37 @@ backend = "aqua:dadav/helm-schema"
 [tools."aqua:dadav/helm-schema"."platforms.linux-arm64"]
 checksum = "sha256:f45e427aef848a1565a1341e3d2468840c64dc1d2c0f3b276982b852d587abe8"
 url = "https://github.com/dadav/helm-schema/releases/download/0.23.4/helm-schema_0.23.4_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/dadav/helm-schema/releases/assets/437194950"
 
 [tools."aqua:dadav/helm-schema"."platforms.linux-arm64-musl"]
 checksum = "sha256:f45e427aef848a1565a1341e3d2468840c64dc1d2c0f3b276982b852d587abe8"
 url = "https://github.com/dadav/helm-schema/releases/download/0.23.4/helm-schema_0.23.4_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/dadav/helm-schema/releases/assets/437194950"
 
 [tools."aqua:dadav/helm-schema"."platforms.linux-x64"]
 checksum = "sha256:02d7aeb3b915b431a007402778f338daf77839d563cea62d9b375896028a72c7"
 url = "https://github.com/dadav/helm-schema/releases/download/0.23.4/helm-schema_0.23.4_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/dadav/helm-schema/releases/assets/437194947"
 
 [tools."aqua:dadav/helm-schema"."platforms.linux-x64-musl"]
 checksum = "sha256:02d7aeb3b915b431a007402778f338daf77839d563cea62d9b375896028a72c7"
 url = "https://github.com/dadav/helm-schema/releases/download/0.23.4/helm-schema_0.23.4_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/dadav/helm-schema/releases/assets/437194947"
 
 [tools."aqua:dadav/helm-schema"."platforms.macos-arm64"]
 checksum = "sha256:e0075eab02f304a8d11bf8a94480fa34ec4f2db2460978d656738bf22f1106d4"
 url = "https://github.com/dadav/helm-schema/releases/download/0.23.4/helm-schema_0.23.4_Darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/dadav/helm-schema/releases/assets/437194961"
 
 [tools."aqua:dadav/helm-schema"."platforms.macos-x64"]
 checksum = "sha256:568945c206f746d45bb366369b257dd3ea25fdb8597a6c34ef678fb688b12ebf"
 url = "https://github.com/dadav/helm-schema/releases/download/0.23.4/helm-schema_0.23.4_Darwin_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/dadav/helm-schema/releases/assets/437194962"
 
 [tools."aqua:dadav/helm-schema"."platforms.windows-x64"]
 checksum = "sha256:261f93081473ae8d465b29320f55282d979af9aa2c0585ad82dbc10db4d89175"
 url = "https://github.com/dadav/helm-schema/releases/download/0.23.4/helm-schema_0.23.4_Windows_x86_64.zip"
+url_api = "https://api.github.com/repos/dadav/helm-schema/releases/assets/437194958"
 
 [[tools.cosign]]
 version = "3.1.2"
@@ -117,36 +124,43 @@ backend = "aqua:golangci/golangci-lint"
 [tools.golangci-lint."platforms.linux-arm64"]
 checksum = "sha256:44cd40a8c76c86755375adfeea52cfd3533cb43d7bd647771e0ae065e166df3a"
 url = "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/413470996"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.linux-arm64-musl"]
 checksum = "sha256:44cd40a8c76c86755375adfeea52cfd3533cb43d7bd647771e0ae065e166df3a"
 url = "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/413470996"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.linux-x64"]
 checksum = "sha256:8df580d2670fed8fa984aac0507099af8df275e665215f5c7a2ae3943893a553"
 url = "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-linux-amd64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/413471054"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.linux-x64-musl"]
 checksum = "sha256:8df580d2670fed8fa984aac0507099af8df275e665215f5c7a2ae3943893a553"
 url = "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-linux-amd64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/413471054"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.macos-arm64"]
 checksum = "sha256:a9c54498731b3128f79e090be6110f3e5fffccc617b08142ed244d4126c73f29"
 url = "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/413470950"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.macos-x64"]
 checksum = "sha256:f6f06d94b6241521c53d15450c5209b028270bf966f842afb11c030c79f5bc16"
 url = "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-darwin-amd64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/413470980"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.windows-x64"]
 checksum = "sha256:bd42e3ebc8cb4ececb86941983baaf1dc221bbb04d838e94ce63b49cc91e02bb"
 url = "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-windows-amd64.zip"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/413471017"
 provenance = "github-attestations"
 
 [[tools.helm]]
@@ -188,30 +202,37 @@ backend = "aqua:norwoodj/helm-docs"
 [tools.helm-docs."platforms.linux-arm64"]
 checksum = "sha256:c3787212332386dcd122debef7848feb165aa701467ae3e3442df7638f3ac4e4"
 url = "https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/norwoodj/helm-docs/releases/assets/178327216"
 
 [tools.helm-docs."platforms.linux-arm64-musl"]
 checksum = "sha256:c3787212332386dcd122debef7848feb165aa701467ae3e3442df7638f3ac4e4"
 url = "https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/norwoodj/helm-docs/releases/assets/178327216"
 
 [tools.helm-docs."platforms.linux-x64"]
 checksum = "sha256:a8cf72ada34fad93285ba2a452b38bdc5bd52cc9a571236244ec31022928d6cc"
 url = "https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/norwoodj/helm-docs/releases/assets/178327210"
 
 [tools.helm-docs."platforms.linux-x64-musl"]
 checksum = "sha256:a8cf72ada34fad93285ba2a452b38bdc5bd52cc9a571236244ec31022928d6cc"
 url = "https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/norwoodj/helm-docs/releases/assets/178327210"
 
 [tools.helm-docs."platforms.macos-arm64"]
 checksum = "sha256:2d8399db5b33d240d5f8985241bcf5483563150b968e3229823822979f3e4b8b"
 url = "https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/norwoodj/helm-docs/releases/assets/178327215"
 
 [tools.helm-docs."platforms.macos-x64"]
 checksum = "sha256:b2f1ffd0feef8dc0901a38a2053481d1d67b63ca30da4ac774166c6b52fa2245"
 url = "https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Darwin_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/norwoodj/helm-docs/releases/assets/178327211"
 
 [tools.helm-docs."platforms.windows-x64"]
 checksum = "sha256:3c54fd78d99e2769cf83a0faf12cf6cd4de1cac6ed7bee8d908a2c8fc23f538c"
 url = "https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Windows_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/norwoodj/helm-docs/releases/assets/178327219"
 
 [[tools.lefthook]]
 version = "2.1.10"
@@ -324,52 +345,81 @@ backend = "aqua:mikefarah/yq"
 [tools.yq."platforms.linux-arm64"]
 checksum = "sha256:578648e463a11c1b6db6010cbf41eafed6bee79466fcffa1bb446672cf7945ea"
 url = "https://github.com/mikefarah/yq/releases/download/v4.53.3/yq_linux_arm64"
+url_api = "https://api.github.com/repos/mikefarah/yq/releases/assets/440146727"
+provenance = "cosign"
 
 [tools.yq."platforms.linux-arm64-musl"]
 checksum = "sha256:578648e463a11c1b6db6010cbf41eafed6bee79466fcffa1bb446672cf7945ea"
 url = "https://github.com/mikefarah/yq/releases/download/v4.53.3/yq_linux_arm64"
+url_api = "https://api.github.com/repos/mikefarah/yq/releases/assets/440146727"
+provenance = "cosign"
 
 [tools.yq."platforms.linux-x64"]
 checksum = "sha256:fa52a4e758c63d38299163fbdd1edfb4c4963247918bf9c1c5d31d84789eded4"
 url = "https://github.com/mikefarah/yq/releases/download/v4.53.3/yq_linux_amd64"
+url_api = "https://api.github.com/repos/mikefarah/yq/releases/assets/440146735"
+provenance = "cosign"
 
 [tools.yq."platforms.linux-x64-musl"]
 checksum = "sha256:fa52a4e758c63d38299163fbdd1edfb4c4963247918bf9c1c5d31d84789eded4"
 url = "https://github.com/mikefarah/yq/releases/download/v4.53.3/yq_linux_amd64"
+url_api = "https://api.github.com/repos/mikefarah/yq/releases/assets/440146735"
+provenance = "cosign"
 
 [tools.yq."platforms.macos-arm64"]
 checksum = "sha256:877de31753a4dd2401aa048937aa9a7fc4d5f6ce858cf31508c5802954297213"
 url = "https://github.com/mikefarah/yq/releases/download/v4.53.3/yq_darwin_arm64"
+url_api = "https://api.github.com/repos/mikefarah/yq/releases/assets/440146762"
+provenance = "cosign"
 
 [tools.yq."platforms.macos-x64"]
 checksum = "sha256:b4ba1ecce3c47f00803f4f964de38394326c7a32eb6540616e04fb2935a0f08d"
 url = "https://github.com/mikefarah/yq/releases/download/v4.53.3/yq_darwin_amd64"
+url_api = "https://api.github.com/repos/mikefarah/yq/releases/assets/440146744"
+provenance = "cosign"
 
 [tools.yq."platforms.windows-x64"]
 checksum = "sha256:e279bc506a452eeafcdf364f91a025455e402a8001169083caf01f4b64a544e2"
 url = "https://github.com/mikefarah/yq/releases/download/v4.53.3/yq_windows_amd64.exe"
+url_api = "https://api.github.com/repos/mikefarah/yq/releases/assets/440146721"
+provenance = "cosign"
 
 [[tools.zizmor]]
 version = "1.28.0"
 backend = "aqua:zizmorcore/zizmor"
 
 [tools.zizmor."platforms.linux-arm64"]
+checksum = "sha256:324e43770cfacf4216f8aefb287263b5b5c733c85b03bf7583b5cc4a0460239e"
+url = "https://github.com/zizmorcore/zizmor/releases/download/v1.28.0/zizmor-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/zizmorcore/zizmor/releases/assets/485211654"
 provenance = "github-attestations"
 
 [tools.zizmor."platforms.linux-arm64-musl"]
 provenance = "github-attestations"
 
 [tools.zizmor."platforms.linux-x64"]
+checksum = "sha256:e87b67160194884e375a46a12c57ccc904f762b53845f254fab7f17d98809c09"
+url = "https://github.com/zizmorcore/zizmor/releases/download/v1.28.0/zizmor-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/zizmorcore/zizmor/releases/assets/485211657"
 provenance = "github-attestations"
 
 [tools.zizmor."platforms.linux-x64-musl"]
 provenance = "github-attestations"
 
 [tools.zizmor."platforms.macos-arm64"]
+checksum = "sha256:54949bbd6b4c8527046bb8990bac9e0dab3eec787640f4e6199ae121dd1040be"
+url = "https://github.com/zizmorcore/zizmor/releases/download/v1.28.0/zizmor-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/zizmorcore/zizmor/releases/assets/485211655"
 provenance = "github-attestations"
 
 [tools.zizmor."platforms.macos-x64"]
+checksum = "sha256:40a58d8560d65c71357b3977d0da425773bf8f10bf1ffd38099d963d3afdf3aa"
+url = "https://github.com/zizmorcore/zizmor/releases/download/v1.28.0/zizmor-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/zizmorcore/zizmor/releases/assets/485211652"
 provenance = "github-attestations"
 
 [tools.zizmor."platforms.windows-x64"]
+checksum = "sha256:06e5b2345323201ed4c55897651862fee3b43f79ddced799f1236f0f0d1c1c0f"
+url = "https://github.com/zizmorcore/zizmor/releases/download/v1.28.0/zizmor-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/zizmorcore/zizmor/releases/assets/485211651"
 provenance = "github-attestations"
