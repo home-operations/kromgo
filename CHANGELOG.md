@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.15.2](https://github.com/home-operations/kromgo/compare/0.15.1...0.15.2) (2026-07-24)
+
+
+### Features
+
+* **deps:** update dependency simple-icons (16.26.0 → 16.27.0) ([#308](https://github.com/home-operations/kromgo/issues/308)) ([92fe7cb](https://github.com/home-operations/kromgo/commit/92fe7cbbb8dfd486195c5468d931b5bd5574647a))
+* **deps:** update module github.com/prometheus/client_golang (v1.23.2 → v1.24.0) ([#309](https://github.com/home-operations/kromgo/issues/309)) ([3632476](https://github.com/home-operations/kromgo/commit/3632476fa7c7de00c5f83ca6bb2988be25a5939d))
+
+
+### Bug Fixes
+
+* **deps:** update dependency marked (18.0.6 → 18.0.7) ([#311](https://github.com/home-operations/kromgo/issues/311)) ([0ff381b](https://github.com/home-operations/kromgo/commit/0ff381bbd353841882bd0cd4fd2cf63d36361aa5))
+* **deps:** update module github.com/prometheus/client_golang (v1.24.0 → v1.24.1) ([#316](https://github.com/home-operations/kromgo/issues/316)) ([5630b18](https://github.com/home-operations/kromgo/commit/5630b18d78bb070d34adb2bd13661903752d09d0))
+* **deps:** update module github.com/prometheus/common (v0.70.0 → v0.70.1) ([#314](https://github.com/home-operations/kromgo/issues/314)) ([ae06e27](https://github.com/home-operations/kromgo/commit/ae06e27ae9525ae35cf5334a7e3cb2a0983beaf7))
+
+
+### Styles
+
+* indent markdown at 2 to match embedded yaml ([#310](https://github.com/home-operations/kromgo/issues/310)) ([d669ff5](https://github.com/home-operations/kromgo/commit/d669ff5471ece9d97ef8bbaef9994521e401b2d2))
+
+
+### Miscellaneous Chores
+
+* **deps:** lock file maintenance ([#315](https://github.com/home-operations/kromgo/issues/315)) ([0d69b9c](https://github.com/home-operations/kromgo/commit/0d69b9c77dfcc205ffad9d26ae5f0c3a4b5894a0))
+* **mise:** Update tool cosign (3.1.1 → 3.1.2) ([#306](https://github.com/home-operations/kromgo/issues/306)) ([581806f](https://github.com/home-operations/kromgo/commit/581806fe3d6513607fd7c2f6ede5cd372cc481fd))
+* **mise:** Update tool oxfmt (0.59.0 → 0.60.0) ([#313](https://github.com/home-operations/kromgo/issues/313)) ([f59ee43](https://github.com/home-operations/kromgo/commit/f59ee43384ad0a3cc841a72686ceabdb60b22eec))
+* **mise:** Update tool zizmor (1.27.0 → 1.28.0) ([#312](https://github.com/home-operations/kromgo/issues/312)) ([4fe43a3](https://github.com/home-operations/kromgo/commit/4fe43a38a5a2776e39ac0b1857bcd2e7c9508d21))
+
 ## [0.15.1](https://github.com/home-operations/kromgo/compare/0.15.0...0.15.1) (2026-07-14)
 
 
