@@ -11,7 +11,11 @@
       "include-component-in-tag": false,
       "include-v-in-tag": false,
       "include-v-in-release-name": false,
-      "always-update": true
+      "always-update": true,
+      "extra-files": [
+        { "type": "generic", "path": "charts/kromgo/Chart.yaml" },
+        "charts/kromgo/README.md"
+      ]
     }
   },
   "changelog-sections": [
