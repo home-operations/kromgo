@@ -5,12 +5,14 @@ templates:
   - deployment.tpl
   - configmap.tpl
 tests:
+  # The tag floats with the release-please-stamped appVersion; assert the
+  # repo:semver shape rather than a hardcoded version.
   - it: defaults the image to repository:appVersion when no digest or tag is set
     template: deployment.tpl
     asserts:
-      - equal:
+      - matchRegex:
           path: spec.template.spec.containers[0].image
-          value: ghcr.io/home-operations/kromgo:0.0.0
+          pattern: ^ghcr\.io/home-operations/kromgo:\d+\.\d+\.\d+$
 
   - it: prefers the digest over the tag when set
     template: deployment.tpl

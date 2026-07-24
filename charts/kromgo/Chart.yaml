@@ -6,9 +6,10 @@ type: application
 # Floor matching the chart's surface: restricted Pod Security (seccompProfile),
 # networking.k8s.io/v1 Ingress, and the Gateway API v1 HTTPRoute.
 kubeVersion: ">=1.25.0-0"
-# version + appVersion are overridden at package time from the release tag.
-version: 0.0.0
-appVersion: "0.0.0"
+# release-please stamps both on release; the release workflow re-stamps them at
+# package time from the tag anyway, so this keeps the repo copy from going stale.
+version: 0.15.1 # x-release-please-version
+appVersion: "0.15.1" # x-release-please-version
 home: https://github.com/home-operations/kromgo
 sources:
   - https://github.com/home-operations/kromgo

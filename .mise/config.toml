@@ -109,8 +109,7 @@ run = "helm unittest charts/kromgo"
 description = "Install the chart into the current cluster (e.g. a kind context) and run `helm test`"
 # The e2e workflow builds the PR's image, kind-loads it, and sets
 # KROMGO_TEST_IMAGE_TAG=e2e + pull policy Never so the test runs the code under
-# review; locally these default to the published `latest` for a quick chart check
-# (the chart appVersion is a release-time placeholder, so a tag is always needed).
+# review; locally these default to the published `latest` for a quick chart check.
 # config.prometheus is never dialed at startup and /readyz is static, so the pod
 # becomes Ready without a real Prometheus.
 run = """
