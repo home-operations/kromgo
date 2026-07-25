@@ -1,0 +1,303 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: CI
+
+# Every pull request check lives here so `Build Success` can fan in from all of
+# them. It is the one required status check on main, which is also what lets the
+# ruleset require branches to be up to date — GitHub rejects that setting unless
+# at least one check is required.
+#
+# The pull request trigger is deliberately unfiltered by path: a workflow skipped
+# by `paths-ignore` never reports, and a required check that never reports blocks
+# the pull request forever. The per-job release-please conditions already skip the
+# version-bump PRs that filter was there to avoid, and `Build Success` passes when
+# its dependencies are skipped rather than failed.
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - ".release-please-manifest.json"
+  pull_request:
+    branches:
+      - main
+  merge_group:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  # renovate: datasource=github-releases depName=helm-unittest/helm-unittest
+  HELM_UNITTEST_VERSION: "v1.1.2"
+
+jobs:
+  go-lint:
+    if: >-
+      ${{ !(startsWith(github.head_ref, 'release-please--')
+      && github.event.pull_request.head.repo.full_name == github.repository) }}
+    name: Go Lint
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@dad1bfd3df957f44999b559dd69dc1671cb4e9ea # v4.2.1
+        with:
+          experimental: true
+          install_args: --locked
+
+      - name: Cache Go modules and build
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Cache golangci-lint
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/golangci-lint
+          key: ${{ runner.os }}-golangci-lint-${{ hashFiles('go.sum', '.golangci.yml') }}
+          restore-keys: ${{ runner.os }}-golangci-lint-
+
+      - name: Fetch build assets
+        run: mise run assets
+
+      - name: Run linter
+        run: mise run lint
+
+  helm-lint:
+    if: >-
+      ${{ !(startsWith(github.head_ref, 'release-please--')
+      && github.event.pull_request.head.repo.full_name == github.repository) }}
+    name: Helm Lint
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@dad1bfd3df957f44999b559dd69dc1671cb4e9ea # v4.2.1
+        with:
+          experimental: true
+          install_args: --locked
+
+      - name: Run helm lint
+        run: mise run helm-lint
+
+  go-test:
+    if: >-
+      ${{ !(startsWith(github.head_ref, 'release-please--')
+      && github.event.pull_request.head.repo.full_name == github.repository) }}
+    name: Go Tests
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@dad1bfd3df957f44999b559dd69dc1671cb4e9ea # v4.2.1
+        with:
+          experimental: true
+          install_args: --locked
+
+      - name: Cache Go modules and build
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Fetch build assets
+        run: mise run assets
+
+      - name: Check go.mod tidiness
+        run: |
+          go mod tidy
+          git diff --exit-code go.mod go.sum
+
+      - name: Check generated files are current
+        run: mise run generate-check
+
+      - name: Run unit tests
+        run: mise run test
+
+  helm-unittest:
+    if: >-
+      ${{ !(startsWith(github.head_ref, 'release-please--')
+      && github.event.pull_request.head.repo.full_name == github.repository) }}
+    name: Helm Unit Tests
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@dad1bfd3df957f44999b559dd69dc1671cb4e9ea # v4.2.1
+        with:
+          experimental: true
+          install_args: --locked
+
+      - name: Run helm unit tests
+        run: |
+          helm plugin install https://github.com/helm-unittest/helm-unittest --version "${HELM_UNITTEST_VERSION}" --verify=false
+          mise run helm-unittest
+
+  # The e2e jobs stay off pushes to main, as they were before this workflow was
+  # consolidated: they build an image and stand up a kind cluster, and main only
+  # receives commits whose pull request already ran them.
+  go-e2e:
+    if: >-
+      ${{ github.event_name != 'push'
+      && !(startsWith(github.head_ref, 'release-please--')
+      && github.event.pull_request.head.repo.full_name == github.repository) }}
+    name: Go E2E
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@dad1bfd3df957f44999b559dd69dc1671cb4e9ea # v4.2.1
+        with:
+          experimental: true
+          install_args: --locked
+
+      - name: Cache Go modules and build
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Fetch build assets
+        run: mise run assets
+
+      - name: Run e2e tests
+        run: mise run test-e2e
+
+  cluster-e2e:
+    if: >-
+      ${{ github.event_name != 'push'
+      && !(startsWith(github.head_ref, 'release-please--')
+      && github.event.pull_request.head.repo.full_name == github.repository) }}
+    name: Helm E2E (kind)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@dad1bfd3df957f44999b559dd69dc1671cb4e9ea # v4.2.1
+        with:
+          experimental: true
+          install_args: --locked
+
+      - name: Create Kind cluster
+        id: kind
+        background: true
+        uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
+        with:
+          cluster_name: kromgo-e2e
+          wait: 60s
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+      - name: Resolve toolchain versions
+        id: tools
+        run: |
+          echo "go=$(mise config get tools.go)" >> "$GITHUB_OUTPUT"
+          echo "node=$(mise config get tools.node)" >> "$GITHUB_OUTPUT"
+
+      - name: Build image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          load: true
+          tags: ghcr.io/home-operations/kromgo:e2e
+          build-args: |
+            GO_VERSION=${{ steps.tools.outputs.go }}
+            NODE_VERSION=${{ steps.tools.outputs.node }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - wait: kind
+
+      - name: Cluster info
+        run: |
+          kubectl version
+          kubectl get nodes
+
+      - name: Load image into kind
+        run: kind load docker-image ghcr.io/home-operations/kromgo:e2e --name kromgo-e2e
+
+      - name: Helm install + test
+        env:
+          KROMGO_TEST_IMAGE_TAG: e2e
+          KROMGO_TEST_PULL_POLICY: Never
+        run: |
+          export KUBECONFIG="${HOME}/.kube/config"
+          mise run helm-test
+
+  status:
+    if: ${{ !cancelled() }}
+    name: Build Success
+    needs:
+      - go-lint
+      - helm-lint
+      - go-test
+      - helm-unittest
+      - go-e2e
+      - cluster-e2e
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - name: Any jobs failed?
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: |
+          exit 1
+
+      - name: All jobs passed or skipped?
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: |
+          echo "All jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"
