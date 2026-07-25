@@ -1,8 +1,6 @@
 # Kromgo
 
-[![Tests](https://github.com/home-operations/kromgo/actions/workflows/tests.yaml/badge.svg)](https://github.com/home-operations/kromgo/actions/workflows/tests.yaml)
-[![E2E](https://github.com/home-operations/kromgo/actions/workflows/e2e.yaml/badge.svg)](https://github.com/home-operations/kromgo/actions/workflows/e2e.yaml)
-[![Lint](https://github.com/home-operations/kromgo/actions/workflows/lint.yaml/badge.svg)](https://github.com/home-operations/kromgo/actions/workflows/lint.yaml)
+[![CI](https://github.com/home-operations/kromgo/actions/workflows/ci.yaml/badge.svg)](https://github.com/home-operations/kromgo/actions/workflows/ci.yaml)
 [![Release](https://img.shields.io/github/v/release/home-operations/kromgo)](https://github.com/home-operations/kromgo/releases)
 [![License](https://img.shields.io/github/license/home-operations/kromgo)](LICENSE)
 [![Discord](https://img.shields.io/discord/673534664354430999?label=discord&logo=discord&logoColor=white&color=blue)](https://discord.gg/home-operations)
@@ -497,7 +495,7 @@ needed — an unsupported or malformed value fails at startup like any other con
 | `GET /graphs/{id}` | SVG chart (`?theme=…`)  | `?format=png` → PNG image · `?format=json` → time-series data      |
 | `GET /`            | HTML gallery            | landing page when `gallery.enabled: false`                         |
 | `GET /assets/…`    | Embedded gallery JS/CSS |                                                                    |
-| `GET /favicon.ico` | The configured favicon  | 404 when `favicon` is unset (see [Favicon](#favicon))               |
+| `GET /favicon.ico` | The configured favicon  | 404 when `favicon` is unset (see [Favicon](#favicon))              |
 
 **`/badges/{id}`** (default SVG):
 
