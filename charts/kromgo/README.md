@@ -1,8 +1,8 @@
 # kromgo
 
-![Version](https://img.shields.io/static/v1?label=Version&message=0.15.2&color=informational&style=flat-square) <!-- x-release-please-version -->
+![Version](https://img.shields.io/static/v1?label=Version&message=0.16.0&color=informational&style=flat-square) <!-- x-release-please-version -->
 ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
-![AppVersion](https://img.shields.io/static/v1?label=AppVersion&message=0.15.2&color=informational&style=flat-square) <!-- x-release-please-version -->
+![AppVersion](https://img.shields.io/static/v1?label=AppVersion&message=0.16.0&color=informational&style=flat-square) <!-- x-release-please-version -->
 
 Safely expose individual Prometheus metric values as SVG badges and graphs
 
