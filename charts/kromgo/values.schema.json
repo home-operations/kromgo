@@ -111,7 +111,7 @@
       "description": "Gateway API HTTPRoute — an alternative to `ingress` for clusters using the\nGateway API. Renders one HTTPRoute pointing at the app service port. Named\n`httpRoute` (not `route`) to avoid confusion with the OpenShift Route kind.",
       "properties": {
         "additionalRules": {
-          "description": " - kromgo.example.com\nCustom rules prepended before the default rule (templated).",
+          "description": "Custom rules prepended before the default rule (templated).",
           "items": {
             "required": []
           },
@@ -145,7 +145,7 @@
           "type": "array"
         },
         "hostnames": {
-          "description": " - name: gateway\n   namespace: gateway\n   sectionName: https\nHostnames matched against the Host header (templated).",
+          "description": "Hostnames matched against the Host header (templated).",
           "items": {
             "required": []
           },
