@@ -230,9 +230,11 @@ httpRoute:
   #  - name: gateway
   #    namespace: gateway
   #    sectionName: https
+
   # -- Hostnames matched against the Host header (templated).
   hostnames: []
   #  - kromgo.example.com
+
   # -- Custom rules prepended before the default rule (templated).
   additionalRules: []
   # -- Filters applied to the default rule.
