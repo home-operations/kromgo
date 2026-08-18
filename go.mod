@@ -1,11 +1,11 @@
 module github.com/home-operations/kromgo
 
-go 1.26.5
+go 1.26.0
 
 require (
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/catppuccin/go v0.3.0
-	github.com/go-analyze/charts v0.6.0
+	github.com/go-analyze/charts v0.6.1
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/cel-go v0.31.0
 	github.com/invopop/jsonschema v0.14.0
@@ -25,7 +25,7 @@ require (
 	github.com/buger/jsonparser v1.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/go-analyze/bulk v0.1.4 // indirect
+	github.com/go-analyze/bulk v0.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
