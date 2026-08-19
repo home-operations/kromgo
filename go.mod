@@ -7,7 +7,7 @@ require (
 	github.com/catppuccin/go v0.3.0
 	github.com/go-analyze/charts v0.6.1
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
-	github.com/google/cel-go v0.31.0
+	github.com/google/cel-go v0.32.0
 	github.com/invopop/jsonschema v0.14.0
 	github.com/prometheus/client_golang v1.24.1
 	github.com/prometheus/client_model v0.6.2
