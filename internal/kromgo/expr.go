@@ -60,11 +60,11 @@ func colorFuncs() []cel.EnvOption {
 		cel.Function("colorScale", cel.Overload("colorScale_double_list_list",
 			[]*cel.Type{cel.DoubleType, cel.ListType(cel.DoubleType), cel.ListType(cel.StringType)}, cel.StringType,
 			cel.FunctionBinding(func(args ...ref.Val) ref.Val {
-				steps, err := args[1].ConvertToNative(reflect.TypeOf([]float64(nil)))
+				steps, err := args[1].ConvertToNative(reflect.TypeFor[[]float64]())
 				if err != nil {
 					return types.NewErr("colorScale steps: %v", err)
 				}
-				colors, err := args[2].ConvertToNative(reflect.TypeOf([]string(nil)))
+				colors, err := args[2].ConvertToNative(reflect.TypeFor[[]string]())
 				if err != nil {
 					return types.NewErr("colorScale colors: %v", err)
 				}

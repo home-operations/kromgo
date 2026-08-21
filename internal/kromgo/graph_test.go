@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/home-operations/kromgo/internal/config"
 	"github.com/prometheus/common/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -46,7 +45,7 @@ func TestHistoryResponse_SkipsNonFinite(t *testing.T) {
 		},
 	}}
 	resp := historyResponse(
-		&resolvedGraph{Graph: config.Graph{ID: "g", Title: "G"}},
+		&resolvedGraph{ID: "g", Title: "G"},
 		time.Unix(0, 0), time.Unix(10, 0), time.Minute, matrix,
 	)
 
