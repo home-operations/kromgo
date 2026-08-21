@@ -41,7 +41,7 @@
       },
       "additionalProperties": false,
       "type": "object",
-      "required": ["id", "query"]
+      "required": ["id", "query", "gallery"]
     },
     "BadgeDefaults": {
       "properties": {
@@ -62,7 +62,8 @@
         }
       },
       "additionalProperties": false,
-      "type": "object"
+      "type": "object",
+      "required": ["gallery"]
     },
     "Cache": {
       "properties": {
@@ -86,7 +87,8 @@
         }
       },
       "additionalProperties": false,
-      "type": "object"
+      "type": "object",
+      "required": ["badge", "graph"]
     },
     "Gallery": {
       "properties": {
@@ -159,7 +161,7 @@
       },
       "additionalProperties": false,
       "type": "object",
-      "required": ["id", "query"]
+      "required": ["id", "query", "gallery"]
     },
     "GraphDefaults": {
       "properties": {
@@ -204,7 +206,8 @@
         }
       },
       "additionalProperties": false,
-      "type": "object"
+      "type": "object",
+      "required": ["gallery"]
     },
     "KromgoConfig": {
       "properties": {
@@ -237,7 +240,8 @@
         }
       },
       "additionalProperties": false,
-      "type": "object"
+      "type": "object",
+      "required": ["gallery", "cache", "defaults"]
     },
     "RangeQuery": {
       "properties": {

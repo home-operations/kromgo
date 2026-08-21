@@ -164,9 +164,6 @@ func humanizeDurationDays(f float64) string {
 	if math.IsInf(f, 0) || math.IsNaN(f) {
 		return humanizeFloat(f) // "+Inf" / "-Inf" / "NaN" — int(NaN/Inf) is undefined in Go
 	}
-	days := int(f / 86400)
-	if days < 0 {
-		days = 0
-	}
+	days := max(int(f/86400), 0)
 	return fmt.Sprintf("%dd", days)
 }

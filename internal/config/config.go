@@ -20,9 +20,9 @@ const DefaultPath = "/config/config.yaml"
 // graphs render a time series (SVG sparkline / history JSON).
 type KromgoConfig struct {
 	Prometheus string   `yaml:"prometheus,omitempty" json:"prometheus,omitempty"`
-	Gallery    Gallery  `yaml:"gallery,omitempty" json:"gallery,omitempty"`
-	Cache      Cache    `yaml:"cache,omitempty" json:"cache,omitempty"`
-	Defaults   Defaults `yaml:"defaults,omitempty" json:"defaults,omitempty"`
+	Gallery    Gallery  `yaml:"gallery,omitempty" json:"gallery"`
+	Cache      Cache    `yaml:"cache,omitempty" json:"cache"`
+	Defaults   Defaults `yaml:"defaults,omitempty" json:"defaults"`
 	Badges     []Badge  `yaml:"badges,omitempty" json:"badges,omitempty"`
 	Graphs     []Graph  `yaml:"graphs,omitempty" json:"graphs,omitempty"`
 	// Favicon is base64-encoded image data served at GET /favicon.ico. Accepts PNG,
@@ -87,9 +87,9 @@ type GallerySettings struct {
 // Defaults holds values applied to every endpoint, each overridable per endpoint.
 type Defaults struct {
 	// Badge holds the default badge rendering settings.
-	Badge BadgeDefaults `yaml:"badge,omitempty" json:"badge,omitempty"`
+	Badge BadgeDefaults `yaml:"badge,omitempty" json:"badge"`
 	// Graph holds the default graph rendering settings.
-	Graph GraphDefaults `yaml:"graph,omitempty" json:"graph,omitempty"`
+	Graph GraphDefaults `yaml:"graph,omitempty" json:"graph"`
 }
 
 // BadgeDefaults holds the default SVG badge rendering settings.
@@ -104,7 +104,7 @@ type BadgeDefaults struct {
 	// LabelColor is the default left-segment (label) color — a name or hex. Empty = grey (#555).
 	LabelColor string `yaml:"labelColor,omitempty" json:"labelColor,omitempty"`
 	// Gallery is the default gallery visibility for badges.
-	Gallery GallerySettings `yaml:"gallery,omitempty" json:"gallery,omitempty"`
+	Gallery GallerySettings `yaml:"gallery,omitempty" json:"gallery"`
 }
 
 // GraphDefaults holds the default graph rendering settings.
@@ -132,7 +132,7 @@ type GraphDefaults struct {
 	// MarkLine is the default set of mark-line types for graphs — see Graph.MarkLine.
 	MarkLine []string `yaml:"markLine,omitempty" json:"markLine,omitempty"`
 	// Gallery is the default gallery visibility for graphs.
-	Gallery GallerySettings `yaml:"gallery,omitempty" json:"gallery,omitempty"`
+	Gallery GallerySettings `yaml:"gallery,omitempty" json:"gallery"`
 }
 
 // Badge defines an instant-value endpoint at /badges/{id}.
@@ -162,7 +162,7 @@ type Badge struct {
 	// Icon (e.g. "mdi:server-outline") or a Simple Icons brand logo (e.g. "si:kubernetes").
 	Icon string `yaml:"icon,omitempty" json:"icon,omitempty"`
 	// Gallery holds this badge's gallery settings (e.g. hidden), overriding defaults.badge.gallery.
-	Gallery GallerySettings `yaml:"gallery,omitempty" json:"gallery,omitempty"`
+	Gallery GallerySettings `yaml:"gallery,omitempty" json:"gallery"`
 }
 
 // Graph defines a time-series endpoint at /graphs/{id}.
@@ -204,7 +204,7 @@ type Graph struct {
 	// defaults.graph.markLine.
 	MarkLine []string `yaml:"markLine,omitempty" json:"markLine,omitempty"`
 	// Gallery holds this graph's gallery settings (e.g. hidden), overriding defaults.graph.gallery.
-	Gallery GallerySettings `yaml:"gallery,omitempty" json:"gallery,omitempty"`
+	Gallery GallerySettings `yaml:"gallery,omitempty" json:"gallery"`
 }
 
 // RangeQuery configures a windowed range query (Badge.Type == "range"). The window
