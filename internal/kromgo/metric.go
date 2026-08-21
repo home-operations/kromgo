@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/google/cel-go/cel"
+	"cel.dev/cel-go/cel"
 	"github.com/home-operations/kromgo/internal/config"
 )
 
