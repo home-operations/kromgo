@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.16.1](https://github.com/home-operations/kromgo/compare/0.16.0...0.16.1) (2026-08-22)
+
+
+### Miscellaneous Chores
+
+* **github-action:** update action docker/setup-buildx-action (v4.2.0 → v4.3.0) ([#376](https://github.com/home-operations/kromgo/issues/376)) ([81173a6](https://github.com/home-operations/kromgo/commit/81173a6eebd0173d112971fb5b82ee5e9d8862e2))
+* **mise:** update tool oxfmt (0.63.0 → 0.64.0) ([#373](https://github.com/home-operations/kromgo/issues/373)) ([fb575c5](https://github.com/home-operations/kromgo/commit/fb575c520ca33883d7f6314e39e47c839c8863c8))
+* **mise:** update tool yq (4.53.3 → 4.53.4) ([#375](https://github.com/home-operations/kromgo/issues/375)) ([29ee153](https://github.com/home-operations/kromgo/commit/29ee153fa1b780d1a7d52fab16eb82dc309bd09c))
+
 ## [0.16.0](https://github.com/home-operations/kromgo/compare/0.15.2...0.16.0) (2026-08-21)
 
 

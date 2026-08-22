@@ -8,8 +8,8 @@ type: application
 kubeVersion: ">=1.25.0-0"
 # release-please stamps both on release; the release workflow re-stamps them at
 # package time from the tag anyway, so this keeps the repo copy from going stale.
-version: 0.16.0 # x-release-please-version
-appVersion: "0.16.0" # x-release-please-version
+version: 0.16.1 # x-release-please-version
+appVersion: "0.16.1" # x-release-please-version
 home: https://github.com/home-operations/kromgo
 sources:
   - https://github.com/home-operations/kromgo
