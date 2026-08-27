@@ -17,7 +17,6 @@ FROM golang:${GO_VERSION}-alpine AS builder
 ARG VERSION=dev
 ARG REVISION=dev
 WORKDIR /src
-RUN apk add --no-cache upx
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
@@ -26,7 +25,6 @@ COPY . .
 COPY --from=assets /src/node_modules ./node_modules
 RUN go run ./cmd/genassets
 RUN CGO_ENABLED=0 go build -ldflags "-s -w -X main.Version=${VERSION} -X main.Gitsha=${REVISION}" -trimpath -o /out/kromgo ./cmd/kromgo
-RUN upx --best --lzma /out/kromgo
 
 FROM gcr.io/distroless/static:nonroot
 COPY --from=builder /out/kromgo /kromgo
