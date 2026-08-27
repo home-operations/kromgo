@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.16.1](https://github.com/home-operations/kromgo/compare/0.16.0...0.16.1) (2026-08-27)
+
+
+### Bug Fixes
+
+* drop UPX compression, packed binaries segfault (upx/upx[#18902](https://github.com/home-operations/kromgo/issues/18902)) ([#380](https://github.com/home-operations/kromgo/issues/380)) ([441dc9e](https://github.com/home-operations/kromgo/commit/441dc9e916c4e4145d72217732896c5c64752df4))
+* **npm:** update dependency marked (18.0.10 → 18.0.11) ([#379](https://github.com/home-operations/kromgo/issues/379)) ([440a2f6](https://github.com/home-operations/kromgo/commit/440a2f67ae587269281bea9c136a3be592aac5b7))
+
+
+### Miscellaneous Chores
+
+* **github-action:** update action docker/github-builder (v1.16.0 → v1.17.0) ([#378](https://github.com/home-operations/kromgo/issues/378)) ([7d26e19](https://github.com/home-operations/kromgo/commit/7d26e19c74161a85cd2897dff79f8b925e2ee9e6))
+* **github-action:** update action docker/setup-buildx-action (v4.2.0 → v4.3.0) ([#376](https://github.com/home-operations/kromgo/issues/376)) ([81173a6](https://github.com/home-operations/kromgo/commit/81173a6eebd0173d112971fb5b82ee5e9d8862e2))
+* **mise:** update mise tools ([#377](https://github.com/home-operations/kromgo/issues/377)) ([4791d23](https://github.com/home-operations/kromgo/commit/4791d23d99931fd246f57245a5ddfd5ff0113a52))
+* **mise:** update tool oxfmt (0.63.0 → 0.64.0) ([#373](https://github.com/home-operations/kromgo/issues/373)) ([fb575c5](https://github.com/home-operations/kromgo/commit/fb575c520ca33883d7f6314e39e47c839c8863c8))
+* **mise:** update tool yq (4.53.3 → 4.53.4) ([#375](https://github.com/home-operations/kromgo/issues/375)) ([29ee153](https://github.com/home-operations/kromgo/commit/29ee153fa1b780d1a7d52fab16eb82dc309bd09c))
+
 ## [0.16.0](https://github.com/home-operations/kromgo/compare/0.15.2...0.16.0) (2026-08-21)
 
 
