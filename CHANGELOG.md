@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.16.2](https://github.com/home-operations/kromgo/compare/0.16.1...0.16.2) (2026-09-05)
+
+
+### Features
+
+* **container:** update image mirror.gcr.io/curlimages/curl (8.21.0 → 8.22.0) ([#391](https://github.com/home-operations/kromgo/issues/391)) ([e68ce0e](https://github.com/home-operations/kromgo/commit/e68ce0e82d6fb6f6021a2fba6910ca27c0d90d24))
+* **go:** update module github.com/prometheus/common (v0.70.1 → v0.71.0) ([#390](https://github.com/home-operations/kromgo/issues/390)) ([7a00316](https://github.com/home-operations/kromgo/commit/7a00316caa2f510c2899370c18115aa79546cd71))
+* **npm:** update dependency simple-icons (16.28.0 → 16.29.0) ([#386](https://github.com/home-operations/kromgo/issues/386)) ([f797cad](https://github.com/home-operations/kromgo/commit/f797cad1b1570049468555a1aebac62af4ff2a23))
+
+
+### Bug Fixes
+
+* **go:** update module github.com/prometheus/client_model (v0.6.2 → v0.6.3) ([#389](https://github.com/home-operations/kromgo/issues/389)) ([b5f3a1b](https://github.com/home-operations/kromgo/commit/b5f3a1b6d72f9f7d664b44bc3794412f97141813))
+
+
+### Documentation
+
+* **agents:** derive Go version from go.mod ([1132b49](https://github.com/home-operations/kromgo/commit/1132b494efa1571c05fb66635c2325f300f145e4))
+
+
+### Miscellaneous Chores
+
+* **github-action:** update action helm/kind-action (v1.14.0 → v1.15.0) ([#396](https://github.com/home-operations/kromgo/issues/396)) ([7660bdd](https://github.com/home-operations/kromgo/commit/7660bdd2af1b3eb3fe1bc8fde323e81538449c1b))
+* **github-action:** update action jdx/mise-action (v4.2.5 → v4.3.0) ([#384](https://github.com/home-operations/kromgo/issues/384)) ([133773b](https://github.com/home-operations/kromgo/commit/133773b9736fbf970d455d7410f91497606ed124))
+* **mise:** update tool aqua:dadav/helm-schema (0.23.4 → 0.23.5) ([#382](https://github.com/home-operations/kromgo/issues/382)) ([462f5ec](https://github.com/home-operations/kromgo/commit/462f5eca6766a1ee3724a2e49c86626cf7846b3d))
+* **mise:** update tool go (1.27.0 → 1.27.1) ([#395](https://github.com/home-operations/kromgo/issues/395)) ([e9d9be3](https://github.com/home-operations/kromgo/commit/e9d9be360e7e5aba5ea7e2090afb5199a985c12d))
+* **mise:** update tool golangci-lint (2.13.1 → 2.13.2) ([#387](https://github.com/home-operations/kromgo/issues/387)) ([0c2451c](https://github.com/home-operations/kromgo/commit/0c2451cfb85ce70cd07744440ae981e87ee7d112))
+* **mise:** update tool lefthook (2.1.11 → 2.1.12) ([#388](https://github.com/home-operations/kromgo/issues/388)) ([aa999b9](https://github.com/home-operations/kromgo/commit/aa999b974b9cce1a0ee1948aa37f2b94f78fefda))
+* **mise:** update tool node (24.19.0 → v24.20.0) ([#385](https://github.com/home-operations/kromgo/issues/385)) ([2303b84](https://github.com/home-operations/kromgo/commit/2303b8400cb2c61ab2ac5f390b989419ada14f26))
+* **mise:** update tool oxfmt (0.64.0 → 0.65.0) ([#383](https://github.com/home-operations/kromgo/issues/383)) ([4ad5212](https://github.com/home-operations/kromgo/commit/4ad52128d9eed3429f8095f84e58fbff72a7f5a8))
+* **mise:** update tool oxfmt (0.65.0 → 0.66.0) ([#393](https://github.com/home-operations/kromgo/issues/393)) ([7210987](https://github.com/home-operations/kromgo/commit/72109878a98538ecc8cbc40fae7bf953f845bd75))
+* **mise:** update tool zizmor (1.29.0 → 1.30.0) ([#392](https://github.com/home-operations/kromgo/issues/392)) ([fe999c9](https://github.com/home-operations/kromgo/commit/fe999c91512fe2cbf5262f036707526e74236c41))
+
 ## [0.16.1](https://github.com/home-operations/kromgo/compare/0.16.0...0.16.1) (2026-08-27)
 
 
