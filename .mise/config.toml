@@ -8,7 +8,7 @@
 
 [tools]
 actionlint = "1.7.12"
-go = "1.27.1"
+go = "1.27.2"
 "go:golang.org/x/vuln/cmd/govulncheck" = "v1.8.0"
 golangci-lint = "2.14.0"
 helm = "4.3.0"
@@ -27,16 +27,16 @@ yq = "4.54.1"
 # so the depends below stay cheap.
 [tasks.assets]
 description = "Vendor npm deps and build embedded assets (marked.js, github-markdown.css, MDI + Simple Icons sets, DejaVu Sans + Comic Neue fonts)"
-sources = ["package.json", "package-lock.json", "cmd/genassets/main.go"]
+sources = ["cmd/genassets/main.go", "package-lock.json", "package.json"]
 outputs = [
-  "internal/kromgo/assets/marked.js",
+  "internal/kromgo/assets/comic-neue-bold.ttf",
+  "internal/kromgo/assets/comic-neue.ttf",
+  "internal/kromgo/assets/dejavu-sans-bold.ttf",
+  "internal/kromgo/assets/dejavu-sans.ttf",
   "internal/kromgo/assets/github-markdown.css",
+  "internal/kromgo/assets/marked.js",
   "internal/kromgo/assets/mdi.txt.gz",
   "internal/kromgo/assets/si.txt.gz",
-  "internal/kromgo/assets/dejavu-sans.ttf",
-  "internal/kromgo/assets/dejavu-sans-bold.ttf",
-  "internal/kromgo/assets/comic-neue.ttf",
-  "internal/kromgo/assets/comic-neue-bold.ttf",
 ]
 run = "npm ci && go run ./cmd/genassets"
 
