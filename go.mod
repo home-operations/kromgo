@@ -14,7 +14,7 @@ require (
 	github.com/prometheus/common v0.72.1
 	github.com/stretchr/testify v1.12.1
 	go.yaml.in/yaml/v4 v4.0.0-rc.6
-	golang.org/x/image v0.46.0
+	golang.org/x/image v0.47.0
 )
 
 require (
