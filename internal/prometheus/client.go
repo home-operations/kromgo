@@ -35,7 +35,7 @@ func New(address string, timeout time.Duration) (*Client, error) {
 func (c *Client) Query(ctx context.Context, query string, t time.Time) (model.Value, error) {
 	ctx, cancel := c.withTimeout(ctx)
 	defer cancel()
-	value, warnings, err := c.api.Query(ctx, query, t)
+	value, warnings, _, err := c.api.Query(ctx, query, t)
 	logWarnings(ctx, query, warnings)
 	if err != nil {
 		return nil, fmt.Errorf("prometheus query: %w", err)
@@ -47,7 +47,7 @@ func (c *Client) Query(ctx context.Context, query string, t time.Time) (model.Va
 func (c *Client) QueryRange(ctx context.Context, query string, r v1.Range) (model.Value, error) {
 	ctx, cancel := c.withTimeout(ctx)
 	defer cancel()
-	value, warnings, err := c.api.QueryRange(ctx, query, r)
+	value, warnings, _, err := c.api.QueryRange(ctx, query, r)
 	logWarnings(ctx, query, warnings)
 	if err != nil {
 		return nil, fmt.Errorf("prometheus range query: %w", err)
