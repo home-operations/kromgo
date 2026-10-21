@@ -288,7 +288,8 @@ func (b *badgeRenderer) writeText(s *strings.Builder, text string, originX, base
 // path. Browsers rasterize <text> through the platform text stack, which darkens stems
 // (hinting, gamma, font smoothing); a plain <path> fill only gets geometric
 // anti-aliasing and so reads visibly thinner and softer than shields.io's <text> at
-// the same size. The stroke restores that weight viewer-independently.
+// the same size. The stroke approximates that weight; 0.3 was calibrated against
+// shields.io in Chrome at 1x and 2x, so other rasterizers may land slightly off.
 const textStrokeWidth = 0.3
 
 // emitTextPath writes a rendered glyph path d as a fill colored for legibility on a

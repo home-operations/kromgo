@@ -179,16 +179,28 @@ func TestBadgeRender_TextShadow(t *testing.T) {
 
 	// Shadow per style follows shields.io: flat and plastic shadow their text,
 	// flat-square and for-the-badge render it flat.
-	for style, want := range map[string]bool{
-		config.StyleFlat:        true,
-		config.StylePlastic:     true,
-		config.StyleFlatSquare:  false,
-		config.StyleForTheBadge: false,
-	} {
-		svg := string(r.render(badgeSpec{style: style, label: "build", message: "passing", color: "green", id: "s"}))
-		assert.Equal(t, want, strings.Contains(svg, `fill-opacity=".3"`), "style %q drop shadow", style)
-		// Glyph paths carry a same-color stroke to match the stem weight browsers give <text>.
-		assert.Contains(t, svg, `<path fill="#fff" stroke="#fff" stroke-width="0.3"`, "style %q text stroke", style)
+	cases := []struct {
+		style  string
+		shadow bool
+	}{
+		{config.StyleFlat, true},
+		{config.StylePlastic, true},
+		{config.StyleFlatSquare, false},
+		{config.StyleForTheBadge, false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.style, func(t *testing.T) {
+			t.Parallel()
+			// A light message background, so the label (always dark) and message
+			// segments take different text colors.
+			svg := string(r.render(badgeSpec{style: tc.style, label: "build", message: "passing", color: "#eeeeee", id: "s"}))
+			assert.Equal(t, tc.shadow, strings.Contains(svg, `fill-opacity=".3"`), "drop shadow")
+			// Every glyph path is stroked in its own text color, with round joins, to
+			// match the stem weight browsers give <text>.
+			assert.Contains(t, svg, `<path fill="#fff" stroke="#fff" stroke-width="0.3" stroke-linejoin="round"`, "label text stroke")
+			assert.Contains(t, svg, `<path fill="#333" stroke="#333" stroke-width="0.3" stroke-linejoin="round"`, "message text stroke")
+			assert.NotContains(t, svg, `fill-opacity=".3" stroke=`, "shadow is not stroked")
+		})
 	}
 }
 
