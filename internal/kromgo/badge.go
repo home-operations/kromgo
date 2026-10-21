@@ -244,10 +244,11 @@ func (b *badgeRenderer) render(spec badgeSpec) []byte {
 	// dependency, and untrusted text becomes geometry that can't inject markup. Each
 	// segment's text + drop shadow take a color legible on that segment's background.
 	bl := float64(baseline)
+	shadow := spec.style != config.StyleFlatSquare
 	if hasLabel {
-		b.writeText(&s, spec.label, float64(labelLeft), bl, labelHex)
+		b.writeText(&s, spec.label, float64(labelLeft), bl, labelHex, shadow)
 	}
-	b.writeText(&s, spec.message, float64(msgLeft), bl, msgHex)
+	b.writeText(&s, spec.message, float64(msgLeft), bl, msgHex, shadow)
 	s.WriteString(`</g></svg>`)
 	return []byte(s.String())
 }
@@ -278,15 +279,22 @@ func xmlIDSafe(s string) string {
 }
 
 // writeText draws s as glyph paths (regular face, configured size) at (originX, baseline)
-// on a background of bgHex, with a drop shadow. See emitTextPath.
-func (b *badgeRenderer) writeText(s *strings.Builder, text string, originX, baseline float64, bgHex string) {
-	b.emitTextPath(s, b.glyphPath(text, originX, baseline), bgHex, true)
+// on a background of bgHex, optionally with a drop shadow. See emitTextPath.
+func (b *badgeRenderer) writeText(s *strings.Builder, text string, originX, baseline float64, bgHex string, shadow bool) {
+	b.emitTextPath(s, b.glyphPath(text, originX, baseline), bgHex, shadow)
 }
+
+// textStrokeWidth is the width (px) of the same-color stroke drawn around every glyph
+// path. Browsers rasterize <text> through the platform text stack, which darkens stems
+// (hinting, gamma, font smoothing); a plain <path> fill only gets geometric
+// anti-aliasing and so reads visibly thinner and softer than shields.io's <text> at
+// the same size. The stroke restores that weight viewer-independently.
+const textStrokeWidth = 0.3
 
 // emitTextPath writes a rendered glyph path d as a fill colored for legibility on a
 // background of bgHex, optionally under a 1px drop shadow. Nothing is written for empty
-// text. flat/flat-square/plastic shadow their text (as shields.io does); for-the-badge
-// does not (shields.io renders for-the-badge text flat).
+// text. flat and plastic shadow their text (as shields.io does); flat-square and
+// for-the-badge do not (shields.io renders both flat).
 func (b *badgeRenderer) emitTextPath(s *strings.Builder, d, bgHex string, shadow bool) {
 	if d == "" {
 		return
@@ -295,7 +303,7 @@ func (b *badgeRenderer) emitTextPath(s *strings.Builder, d, bgHex string, shadow
 	if shadow {
 		fmt.Fprintf(s, `<path transform="translate(0 1)" fill="%s" fill-opacity=".3" d="%s"/>`, shadowColor, d)
 	}
-	fmt.Fprintf(s, `<path fill="%s" d="%s"/>`, textColor, d)
+	fmt.Fprintf(s, `<path fill="%s" stroke="%s" stroke-width="%g" stroke-linejoin="round" d="%s"/>`, textColor, textColor, textStrokeWidth, d)
 }
 
 // for-the-badge geometry — a faithful port of shields.io's forTheBadge() renderer:

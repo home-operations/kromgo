@@ -65,7 +65,7 @@ func TestBadgeRender_ForTheBadge(t *testing.T) {
 	assert.Greater(t, svgWidth(t, svg), svgWidth(t, flat), "for-the-badge is wider than flat")
 
 	// for-the-badge text is flat (no drop shadow), as shields.io renders it — unlike
-	// flat/flat-square/plastic, which do shadow their text.
+	// flat/plastic, which do shadow their text.
 	assert.NotContains(t, s, `fill-opacity=".3"`, "for-the-badge text has no drop shadow")
 	assert.Contains(t, string(flat), `fill-opacity=".3"`, "flat text keeps its drop shadow")
 

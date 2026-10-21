@@ -172,6 +172,26 @@ func TestBadgeRender_TextContrast(t *testing.T) {
 	assert.Contains(t, light, `<path fill="#fff"`, "label text stays white on the dark label segment")
 }
 
+func TestBadgeRender_TextShadow(t *testing.T) {
+	t.Parallel()
+	r, err := newBadgeRenderer(config.BadgeDefaults{})
+	require.NoError(t, err)
+
+	// Shadow per style follows shields.io: flat and plastic shadow their text,
+	// flat-square and for-the-badge render it flat.
+	for style, want := range map[string]bool{
+		config.StyleFlat:        true,
+		config.StylePlastic:     true,
+		config.StyleFlatSquare:  false,
+		config.StyleForTheBadge: false,
+	} {
+		svg := string(r.render(badgeSpec{style: style, label: "build", message: "passing", color: "green", id: "s"}))
+		assert.Equal(t, want, strings.Contains(svg, `fill-opacity=".3"`), "style %q drop shadow", style)
+		// Glyph paths carry a same-color stroke to match the stem weight browsers give <text>.
+		assert.Contains(t, svg, `<path fill="#fff" stroke="#fff" stroke-width="0.3"`, "style %q text stroke", style)
+	}
+}
+
 func TestBadgeRender_LabelColor(t *testing.T) {
 	t.Parallel()
 	r, err := newBadgeRenderer(config.BadgeDefaults{})
