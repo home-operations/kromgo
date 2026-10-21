@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.16.3](https://github.com/home-operations/kromgo/compare/0.16.2...0.16.3) (2026-10-21)
+
+
+### Features
+
+* **container:** update image mirror.gcr.io/curlimages/curl (8.22.0 → 8.23.0) ([#458](https://github.com/home-operations/kromgo/issues/458)) ([7dc9c8a](https://github.com/home-operations/kromgo/commit/7dc9c8a8e0c5c65e7c285955a106a094f95a35c0))
+* **go:** update module github.com/prometheus/client_golang (v1.24.1 → v1.25.0) ([#441](https://github.com/home-operations/kromgo/issues/441)) ([045154b](https://github.com/home-operations/kromgo/commit/045154b5429c9e028c82883c6ccf507fb6106148))
+* **npm:** update dependency simple-icons (16.33.0 → 16.35.0) ([#459](https://github.com/home-operations/kromgo/issues/459)) ([d3009a1](https://github.com/home-operations/kromgo/commit/d3009a1beee00e6268d075431d6209e11314a495))
+
+
+### Bug Fixes
+
+* **badge:** match shields.io text weight and drop the flat-square shadow ([#456](https://github.com/home-operations/kromgo/issues/456)) ([e10932b](https://github.com/home-operations/kromgo/commit/e10932b873a8258d13cab69f9dc4b81ad0b97be6))
+* **go:** update module github.com/go-analyze/charts (v0.6.3 → v0.6.4) ([#449](https://github.com/home-operations/kromgo/issues/449)) ([85f87b4](https://github.com/home-operations/kromgo/commit/85f87b40db7d6b62eb0e3f7faed5a4446a6af2f8))
+
+
+### Miscellaneous Chores
+
+* **github-action:** update github-actions ([#450](https://github.com/home-operations/kromgo/issues/450)) ([dbf2beb](https://github.com/home-operations/kromgo/commit/dbf2bebbf0072dc11af6252ad61c766125ba11e7))
+* **mise:** update mise tools ([#448](https://github.com/home-operations/kromgo/issues/448)) ([6a3c480](https://github.com/home-operations/kromgo/commit/6a3c48061e0a73db99abff637d79451d3f30b55b))
+* **mise:** update tool aqua:dadav/helm-schema (0.23.5 → 0.24.0) ([#457](https://github.com/home-operations/kromgo/issues/457)) ([9f8f434](https://github.com/home-operations/kromgo/commit/9f8f4342882d0a3d796af828f8245f09d5af0960))
+* **mise:** update tool go (1.27.2 → 1.27.3) ([#452](https://github.com/home-operations/kromgo/issues/452)) ([6a366bc](https://github.com/home-operations/kromgo/commit/6a366bc51cda85e016ae2f2078a5125a45639355))
+* **mise:** update tool golangci-lint (2.14.0 → 2.15.0) ([#451](https://github.com/home-operations/kromgo/issues/451)) ([b5bbdb8](https://github.com/home-operations/kromgo/commit/b5bbdb8fb61c23ce7c14636c2aafa4e987f9f2aa))
+* **mise:** update tool node (24.21.0 → v24.22.0) ([#453](https://github.com/home-operations/kromgo/issues/453)) ([c9cfa79](https://github.com/home-operations/kromgo/commit/c9cfa79b2b7f34fb1be9ab30de0350ade45bf39e))
+* **mise:** update tool oxfmt (0.72.0 → 0.73.0) ([#455](https://github.com/home-operations/kromgo/issues/455)) ([be32946](https://github.com/home-operations/kromgo/commit/be32946b1c72af50f873fe8bf2754603ff0e01dc))
+
 ## [0.16.2](https://github.com/home-operations/kromgo/compare/0.16.1...0.16.2) (2026-10-18)
 
 
