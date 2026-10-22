@@ -191,18 +191,18 @@ checksum = "sha256:6a9724d9b50a5f22b4816cded441b5a8d9ddae546191a5e5b7efa5a5e2ee2
 url = "https://nodejs.org/dist/v24.22.0/node-v24.22.0-darwin-arm64.tar.gz"
 
 [[tools.npm]]
-version = "12.2.0"
+version = "12.2.1"
 backend = "aqua:npm/cli"
-specifiers = ["12.2.0"]
+specifiers = ["12.2.1"]
 
 [tools.npm."platforms.linux-arm64"]
-url = "https://registry.npmjs.org/npm/-/npm-12.2.0.tgz"
+url = "https://registry.npmjs.org/npm/-/npm-12.2.1.tgz"
 
 [tools.npm."platforms.linux-x64"]
-url = "https://registry.npmjs.org/npm/-/npm-12.2.0.tgz"
+url = "https://registry.npmjs.org/npm/-/npm-12.2.1.tgz"
 
 [tools.npm."platforms.macos-arm64"]
-url = "https://registry.npmjs.org/npm/-/npm-12.2.0.tgz"
+url = "https://registry.npmjs.org/npm/-/npm-12.2.1.tgz"
 
 [[tools.oxfmt]]
 version = "0.73.0"
