@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.16.4](https://github.com/home-operations/kromgo/compare/0.16.3...0.16.4) (2026-10-24)
+
+
+### Miscellaneous Chores
+
+* **github-action:** update action jdx/mise-action (v5.2.1 → v5.2.2) ([#466](https://github.com/home-operations/kromgo/issues/466)) ([f7302b9](https://github.com/home-operations/kromgo/commit/f7302b924d3110f16cc0cf750b1bf747fb9ed6d2))
+* **github-action:** update github-actions ([#462](https://github.com/home-operations/kromgo/issues/462)) ([c825944](https://github.com/home-operations/kromgo/commit/c825944bb8382d758166fdc53ec41134c36aac66))
+* **mise:** update tool cosign (3.1.3 → 3.1.4) ([#465](https://github.com/home-operations/kromgo/issues/465)) ([6ce887f](https://github.com/home-operations/kromgo/commit/6ce887f191ad991d23a6ae4042be96169e32329f))
+* **mise:** update tool node (24.22.0 → v24.22.1) ([#464](https://github.com/home-operations/kromgo/issues/464)) ([e4f4f8c](https://github.com/home-operations/kromgo/commit/e4f4f8c1ce1494a65a77f10807d8e1f777cd9ca8))
+* **mise:** update tool npm (12.2.0 → 12.2.1) ([#460](https://github.com/home-operations/kromgo/issues/460)) ([32bd942](https://github.com/home-operations/kromgo/commit/32bd9425d6c947da5076741a44c06f50ddffec96))
+* **mise:** update tool oxfmt (0.73.0 → 0.74.0) ([#463](https://github.com/home-operations/kromgo/issues/463)) ([902b994](https://github.com/home-operations/kromgo/commit/902b994ffcffa556e3265fdb5362c7ca8ad33cc2))
+
 ## [0.16.3](https://github.com/home-operations/kromgo/compare/0.16.2...0.16.3) (2026-10-21)
 
 
