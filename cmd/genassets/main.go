@@ -1,11 +1,11 @@
 // Command genassets builds the assets that internal/kromgo embeds with //go:embed,
 // from the npm packages vendored in node_modules (marked, github-markdown-css,
 // @mdi/svg, simple-icons, and the DejaVu Sans + Comic Neue TrueType faces). Versions are
-// pinned in package.json / package-lock.json
-// and kept current by Renovate; this program is a pure local transform — it does no
-// network I/O. Run `npm ci` (or `mise run assets`) first to populate node_modules.
+// pinned in package.json / pnpm-lock.yaml and kept current by Renovate; this program is
+// a pure local transform — it does no network I/O. Run `pnpm install --frozen-lockfile`
+// (or `mise run assets`) first to populate node_modules.
 //
-//	npm ci && go run ./cmd/genassets
+//	pnpm install --frozen-lockfile && go run ./cmd/genassets
 //
 // The embedded files are not committed; a fresh checkout / CI / Docker build
 // regenerates them before compiling internal/kromgo.
@@ -46,7 +46,8 @@ func main() {
 
 func run() error {
 	if _, err := os.Stat(nodeModules); err != nil {
-		return fmt.Errorf("%s missing — run `npm ci` (or `mise run assets`) first: %w", nodeModules, err)
+		return fmt.Errorf("%s missing — run `pnpm install --frozen-lockfile` (or `mise run assets`) first: %w",
+			nodeModules, err)
 	}
 	steps := []struct {
 		out string

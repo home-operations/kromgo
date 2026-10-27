@@ -1,17 +1,22 @@
 # syntax=docker/dockerfile:1
 
 # ARGs used in a FROM must live in the global scope (before the first FROM).
-# Both versions are supplied by the release workflow from mise — the single
+# All versions are supplied by the release workflow from mise — the single
 # source of truth for the toolchain (see .mise/config.toml).
 ARG NODE_VERSION
 ARG GO_VERSION
 
 # Vendor the npm packages (marked, github-markdown-css, @mdi/svg, simple-icons) that
-# become the embedded assets. Pinned by package-lock.json and kept current by Renovate.
+# become the embedded assets. Pinned by pnpm-lock.yaml and kept current by Renovate.
 FROM node:${NODE_VERSION}-alpine AS assets
+# The Node image ships no pnpm, and its npm package's install script only swaps the
+# wrappers that run it through Node for its native binary, so it is installed
+# without scripts.
+ARG PNPM_VERSION
+RUN npm install --global --ignore-scripts "pnpm@${PNPM_VERSION:?PNPM_VERSION is required}"
 WORKDIR /src
-COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
+COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 
 FROM golang:${GO_VERSION}-alpine AS builder
 ARG VERSION=dev

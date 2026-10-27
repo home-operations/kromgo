@@ -1,0 +1,66 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@expo-google-fonts/comic-neue':
+        specifier: 0.4.1
+        version: 0.4.1
+      '@mdi/svg':
+        specifier: 7.4.47
+        version: 7.4.47
+      dejavu-fonts-ttf:
+        specifier: 2.37.3
+        version: 2.37.3
+      github-markdown-css:
+        specifier: 5.9.0
+        version: 5.9.0
+      marked:
+        specifier: 18.1.1
+        version: 18.1.1
+      simple-icons:
+        specifier: 16.35.0
+        version: 16.35.0
+
+packages:
+
+  '@expo-google-fonts/comic-neue@0.4.1':
+    resolution: {integrity: sha512-1kYFjZeSQnGFeMnwk/B7M3p+og5eW6QZLxjMeMiZ/7TnP2IEAdYo0Gjy3XH2TpoiBHS9PAwEHaETVthVPsF09Q==}
+
+  '@mdi/svg@7.4.47':
+    resolution: {integrity: sha512-WQ2gDll12T9WD34fdRFgQVgO8bag3gavrAgJ0frN4phlwdJARpE6gO1YvLEMJR0KKgoc+/Ea/A0Pp11I00xBvw==}
+
+  dejavu-fonts-ttf@2.37.3:
+    resolution: {integrity: sha512-f1hd7jJbeQa1VWcw+K2KrTXS50zTMaHpVC4XIKJpNcDeYR5ajMtj/iLlQDYNvLOKamUB3ARVVCf79lNwNVztSQ==}
+
+  github-markdown-css@5.9.0:
+    resolution: {integrity: sha512-tmT5sY+zvg2302XLYEfH2mtkViIM1SWf2nvYoF5N1ZsO0V6B2qZTiw3GOzw4vpjLygK/KG35qRlPFweHqfzz5w==}
+    engines: {node: '>=10'}
+
+  marked@18.1.1:
+    resolution: {integrity: sha512-zEGgrtUG8crk+TrMacJSVABU4DYDDkS8uqgU3ohrn/2fW9C2AEfUrO3m6IhpIpQpl7YcVpiXXC9cSMWDANT3dg==}
+    engines: {node: '>= 20'}
+    hasBin: true
+
+  simple-icons@16.35.0:
+    resolution: {integrity: sha512-TCfl/2+GTrx0nCo4pEWGvxhOb8c6NsqOU1OpwjtF4lwJAthB8IYVD0fuIMjLMg6JFuG1YBO0t1iETQqJLqkoJA==}
+    engines: {node: '>=0.12.18'}
+
+snapshots:
+
+  '@expo-google-fonts/comic-neue@0.4.1': {}
+
+  '@mdi/svg@7.4.47': {}
+
+  dejavu-fonts-ttf@2.37.3: {}
+
+  github-markdown-css@5.9.0: {}
+
+  marked@18.1.1: {}
+
+  simple-icons@16.35.0: {}
