@@ -192,6 +192,7 @@ jobs:
         run: |
           echo "go=$(mise config get tools.go)" >> "$GITHUB_OUTPUT"
           echo "node=$(mise config get tools.node)" >> "$GITHUB_OUTPUT"
+          echo "pnpm=$(mise config get tools.pnpm)" >> "$GITHUB_OUTPUT"
 
       - name: Build image
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
@@ -202,6 +203,7 @@ jobs:
           build-args: |
             GO_VERSION=${{ steps.tools.outputs.go }}
             NODE_VERSION=${{ steps.tools.outputs.node }}
+            PNPM_VERSION=${{ steps.tools.outputs.pnpm }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

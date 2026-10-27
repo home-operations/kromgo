@@ -423,13 +423,13 @@ kromgo's bundled palettes (an unknown value falls back to the default):
 `font` accepts one of:
 
 - **`dejavu-sans`** (the default) / **`dejavu-sans-bold`** — the free, metric-compatible stand-in for the
-  Verdana that [shields.io](https://shields.io) renders with. Vendored via npm (`dejavu-fonts-ttf`).
+  Verdana that [shields.io](https://shields.io) renders with. Vendored from npm (`dejavu-fonts-ttf`).
 - **`comic-neue`** / **`comic-neue-bold`** — a free Comic Sans alternative (Google Fonts, via
   `@expo-google-fonts/comic-neue`), for when a badge wants some personality.
 
 Both faces are compiled in by `cmd/genassets` (kept current by Renovate). Badges and graphs default to
 `dejavu-sans` (shields.io-style — 11 px text, 20 px tall); set `font:` to opt into the others. Fonts are
-compiled into the binary — there's no reading from disk, so add a face by vendoring it (npm) and PRing it
+compiled into the binary — there's no reading from disk, so add a face by vendoring it (`pnpm add`) and PRing it
 into the registry. An unknown name fails fast at startup.
 
 ## Gallery
@@ -717,13 +717,13 @@ summary.
 ## Building from source
 
 The gallery's `marked.js` / `github-markdown.css` and the full Material Design Icons and Simple Icons
-sets are vendored via npm (`package.json` + `package-lock.json`) and baked into the binary with
+sets are vendored via pnpm (`package.json` + `pnpm-lock.yaml`) and baked into the binary with
 `//go:embed` rather than committed. [`cmd/genassets`](cmd/genassets/main.go) reads `node_modules` and
-writes the embedded files, so a build runs `npm ci` once (network) and the resulting binary is
+writes the embedded files, so a build runs `pnpm install --frozen-lockfile` once (network) and the resulting binary is
 self-contained (nothing fetched at runtime).
 
 ```bash
-mise run assets   # npm ci + go run ./cmd/genassets (re-runs only when the lockfile changes)
+mise run assets   # pnpm install --frozen-lockfile + go run ./cmd/genassets (re-runs only when the lockfile changes)
 go build ./cmd/kromgo
 ```
 

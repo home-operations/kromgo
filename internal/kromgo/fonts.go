@@ -11,8 +11,8 @@ import (
 // Fonts are compiled into the binary, never read from disk — the image is scratch
 // and we control the set. DejaVu Sans is the default for badges and graphs (the free,
 // metric-compatible stand-in for the Verdana shields.io renders with); Comic Neue is a
-// second selectable face. Both are vendored via npm and generated into assets/ by
-// cmd/genassets (regular + bold). Add a face by vendoring it (npm) and PRing it here.
+// second selectable face. Both are vendored from npm and generated into assets/ by
+// cmd/genassets (regular + bold). Add a face by vendoring it (pnpm add) and PRing it here.
 
 //go:embed assets/dejavu-sans.ttf
 var dejavuSansTTF []byte

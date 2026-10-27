@@ -25,6 +25,7 @@ jobs:
     outputs:
       go-version: ${{ steps.versions.outputs.go-version }}
       node-version: ${{ steps.versions.outputs.node-version }}
+      pnpm-version: ${{ steps.versions.outputs.pnpm-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -43,6 +44,7 @@ jobs:
         run: |
           echo "go-version=$(mise config get tools.go)" >> "$GITHUB_OUTPUT"
           echo "node-version=$(mise config get tools.node)" >> "$GITHUB_OUTPUT"
+          echo "pnpm-version=$(mise config get tools.pnpm)" >> "$GITHUB_OUTPUT"
 
   release:
     name: Release
@@ -58,6 +60,7 @@ jobs:
         REVISION=${{ github.sha }}
         GO_VERSION=${{ needs.versions.outputs.go-version }}
         NODE_VERSION=${{ needs.versions.outputs.node-version }}
+        PNPM_VERSION=${{ needs.versions.outputs.pnpm-version }}
       cache: true
       meta-images: ghcr.io/${{ github.repository }}
       meta-tags: |
