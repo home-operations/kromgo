@@ -197,26 +197,26 @@ backend = "npm:oxfmt"
 specifiers = ["0.74.0"]
 
 [[tools.pnpm]]
-version = "12.15.0"
+version = "12.16.0"
 backend = "aqua:pnpm/pnpm"
-specifiers = ["12.15.0"]
+specifiers = ["12.16.0"]
 
 [tools.pnpm."platforms.linux-arm64"]
-checksum = "sha256:d7ce93a2c7d847d3a34bd3f559b60c14f578b1320c17cc352a2c5c5fdf956117"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.15.0/pnpm-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/662173352"
+checksum = "sha256:be414eee035c3cc4f0a8fe20cbfc44b7fae9e4545aec6f45565a24789aebca93"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.16.0/pnpm-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/679856233"
 provenance = "github-attestations"
 
 [tools.pnpm."platforms.linux-x64"]
-checksum = "sha256:55b5ed0092bd11176c1669598e231ae52e7cedac59de6efd0d415730f37d0598"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.15.0/pnpm-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/662173360"
+checksum = "sha256:4492070f381f5cc42b977b968d8d72b970ffd17bef2523c229170b2cd4ece44a"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.16.0/pnpm-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/679856237"
 provenance = "github-attestations"
 
 [tools.pnpm."platforms.macos-arm64"]
-checksum = "sha256:6a41a2877773e97f19832067187cc6fc82e186d8a2cf91fec4b4c1a5fbd6ef27"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.15.0/pnpm-darwin-arm64.tar.gz"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/662173343"
+checksum = "sha256:a4e2b1dbe3ae5985fb5530b0c521be56cc160361f3fa6a869f3ea6f77e88fb4c"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.16.0/pnpm-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/679856235"
 provenance = "github-attestations"
 
 [[tools.yq]]
