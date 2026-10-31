@@ -3,7 +3,7 @@ module github.com/home-operations/kromgo
 go 1.27.0
 
 require (
-	cel.dev/cel-go v0.33.1
+	cel.dev/cel-go v0.33.2
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/catppuccin/go v0.3.0
 	github.com/go-analyze/charts v0.6.4
