@@ -1,5 +1,48 @@
 # Changelog
 
+## [0.16.4](https://github.com/home-operations/kromgo/compare/0.16.3...0.16.4) (2026-11-01)
+
+
+### Features
+
+* **npm:** update dependency simple-icons (16.35.0 → 16.36.0) ([#472](https://github.com/home-operations/kromgo/issues/472)) ([f6f6723](https://github.com/home-operations/kromgo/commit/f6f6723c875c275e6c0749dec9557179f69b0100))
+
+
+### Bug Fixes
+
+* **container:** update image mirror.gcr.io/curlimages/curl (11e64e2 → 3fb7e13) ([#471](https://github.com/home-operations/kromgo/issues/471)) ([4b17890](https://github.com/home-operations/kromgo/commit/4b17890a8e33db9084beed8c5c1d36cd1f5ffd7f))
+
+
+### Continuous Integration
+
+* **govulncheck:** run the scan on a schedule ([a8080cd](https://github.com/home-operations/kromgo/commit/a8080cd65854f10e97e968fbecbcdfb111ff2da4))
+* mark issues and PRs stale after 180 days, close 14 days later ([1c0a143](https://github.com/home-operations/kromgo/commit/1c0a143073ec54c4fd4f14ab66b908fda2b05647))
+
+
+### Miscellaneous Chores
+
+* **build:** vendor assets with pnpm on Node 26 ([#470](https://github.com/home-operations/kromgo/issues/470)) ([d1ee69c](https://github.com/home-operations/kromgo/commit/d1ee69cb3cb8f4784ffe7a49f06d753b10a05483))
+* **github-action:** update action docker/github-builder (v1.18.0 → v1.18.1) ([#467](https://github.com/home-operations/kromgo/issues/467)) ([142f841](https://github.com/home-operations/kromgo/commit/142f84198ca4394fb94ac5396942e9260a7dc7b9))
+* **github-action:** update action docker/login-action (v4.6.0 → v4.7.0) ([#468](https://github.com/home-operations/kromgo/issues/468)) ([a1307c7](https://github.com/home-operations/kromgo/commit/a1307c7922f9ab53cf66fabfbd470ed5c4cf07ad))
+* **github-action:** update action jdx/mise-action (v5.2.1 → v5.2.2) ([#466](https://github.com/home-operations/kromgo/issues/466)) ([f7302b9](https://github.com/home-operations/kromgo/commit/f7302b924d3110f16cc0cf750b1bf747fb9ed6d2))
+* **github-action:** update action jdx/mise-action (v5.2.2 → v5.2.3) ([#469](https://github.com/home-operations/kromgo/issues/469)) ([f243300](https://github.com/home-operations/kromgo/commit/f2433002e74c47354fbddc73eefe2e6777429e82))
+* **github-action:** update action jdx/mise-action (v5.2.3 → v5.2.4) ([#477](https://github.com/home-operations/kromgo/issues/477)) ([0d0a2c3](https://github.com/home-operations/kromgo/commit/0d0a2c311f0b87d8381e4d7c8be7a11090545ad6))
+* **github-action:** update github-actions ([#462](https://github.com/home-operations/kromgo/issues/462)) ([c825944](https://github.com/home-operations/kromgo/commit/c825944bb8382d758166fdc53ec41134c36aac66))
+* **go:** update module cel.dev/cel-go (v0.32.0 → v0.33.1) ([#474](https://github.com/home-operations/kromgo/issues/474)) ([35a8b71](https://github.com/home-operations/kromgo/commit/35a8b71d1d828ba3eef9bfcfc4024e49eaa79e97))
+* **go:** update module cel.dev/cel-go (v0.33.1 → v0.33.2) ([#480](https://github.com/home-operations/kromgo/issues/480)) ([c266a13](https://github.com/home-operations/kromgo/commit/c266a134d68172ec81b40207bbfa4fc1ead38282))
+* **go:** update module github.com/prometheus/common (v0.72.1 → v0.73.1) ([#481](https://github.com/home-operations/kromgo/issues/481)) ([4d4024c](https://github.com/home-operations/kromgo/commit/4d4024c1981e5c374bb9d103ead5e81440bb9099))
+* **go:** update module go.yaml.in/yaml/v4 (v4.0.0-rc.6 → v4.0.0-rc.7) ([#482](https://github.com/home-operations/kromgo/issues/482)) ([62e787e](https://github.com/home-operations/kromgo/commit/62e787e33190bd1adec8964829d3a42e81624f1e))
+* **mise:** update tool cosign (3.1.3 → 3.1.4) ([#465](https://github.com/home-operations/kromgo/issues/465)) ([6ce887f](https://github.com/home-operations/kromgo/commit/6ce887f191ad991d23a6ae4042be96169e32329f))
+* **mise:** update tool node (24.22.0 → v24.22.1) ([#464](https://github.com/home-operations/kromgo/issues/464)) ([e4f4f8c](https://github.com/home-operations/kromgo/commit/e4f4f8c1ce1494a65a77f10807d8e1f777cd9ca8))
+* **mise:** update tool node (26.12.1 → v26.13.0) ([#479](https://github.com/home-operations/kromgo/issues/479)) ([1d5af2c](https://github.com/home-operations/kromgo/commit/1d5af2c5db722397ba056b91792dc29278617cbd))
+* **mise:** update tool npm (12.2.0 → 12.2.1) ([#460](https://github.com/home-operations/kromgo/issues/460)) ([32bd942](https://github.com/home-operations/kromgo/commit/32bd9425d6c947da5076741a44c06f50ddffec96))
+* **mise:** update tool oxfmt (0.73.0 → 0.74.0) ([#463](https://github.com/home-operations/kromgo/issues/463)) ([902b994](https://github.com/home-operations/kromgo/commit/902b994ffcffa556e3265fdb5362c7ca8ad33cc2))
+* **mise:** update tool oxfmt (0.74.0 → 0.75.0) ([#476](https://github.com/home-operations/kromgo/issues/476)) ([9d4fd4d](https://github.com/home-operations/kromgo/commit/9d4fd4d8ac9636c3aa1a7db4e177f2a5a7e77dbb))
+* **mise:** update tool pnpm (12.15.0 → 12.16.0) ([#475](https://github.com/home-operations/kromgo/issues/475)) ([a70af61](https://github.com/home-operations/kromgo/commit/a70af61fc84b1f197f0f663b84f47bb3de9b4733))
+* **mise:** update tool pnpm (12.16.0 → 12.16.1) ([#478](https://github.com/home-operations/kromgo/issues/478)) ([4c64430](https://github.com/home-operations/kromgo/commit/4c6443033c3d805b950d35bd2cf77f7a775a80a6))
+* **npm:** update dependency marked (18.1.1 → 18.1.2) ([#473](https://github.com/home-operations/kromgo/issues/473)) ([f12e402](https://github.com/home-operations/kromgo/commit/f12e402df0cfe957c19c285d346b1fba53c4faa7))
+* **renovate:** extend the org preset from home-operations/.github ([9744d6b](https://github.com/home-operations/kromgo/commit/9744d6b8c58500c02a26a9ae0207736a920e624a))
+
 ## [0.16.3](https://github.com/home-operations/kromgo/compare/0.16.2...0.16.3) (2026-10-21)
 
 
