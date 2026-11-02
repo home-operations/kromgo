@@ -13,7 +13,7 @@ require (
 	github.com/prometheus/client_model v0.6.3
 	github.com/prometheus/common v0.73.1
 	github.com/stretchr/testify v1.12.1
-	go.yaml.in/yaml/v4 v4.0.0-rc.7
+	go.yaml.in/yaml/v4 v4.0.0-rc.8
 	golang.org/x/image v0.47.0
 )
 
