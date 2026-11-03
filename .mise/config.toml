@@ -8,7 +8,6 @@
 # `mise tasks` lists tasks; `mise run <task>` runs one.
 
 [tools]
-actionlint = "1.7.12"
 go = "1.27.3"
 "go:golang.org/x/vuln/cmd/govulncheck" = "v1.9.0"
 golangci-lint = "2.15.0"
