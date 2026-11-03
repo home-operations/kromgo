@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	cel.dev/cel-go v0.33.2
-	github.com/caarlos0/env/v11 v11.4.1
+	github.com/caarlos0/env/v11 v11.4.2
 	github.com/catppuccin/go v0.3.0
 	github.com/go-analyze/charts v0.6.4
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
