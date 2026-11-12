@@ -19,17 +19,35 @@ const defaultBadgeFontSize = 11
 // badgeRenderer draws shields-style SVG badges (an optional left icon, a label, and
 // a value). Text is rendered as vector paths from the configured font, so the badge
 // is identical in every viewer (no dependence on system fonts or SVG textLength) and
-// segment widths always match the glyphs exactly. sfnt.Font is safe for concurrent
-// use as long as each call uses its own Buffer.
+// segment widths always match the glyphs exactly. The verdana font is the exception:
+// it emits native <text> for the viewer's browser to render, as shields.io does (see
+// fontVerdana). sfnt.Font is safe for concurrent use as long as each call uses its
+// own Buffer.
 type badgeRenderer struct {
 	font     *sfnt.Font // regular face: label text and the flat/flat-square/plastic styles
 	boldFont *sfnt.Font // bold companion: the for-the-badge message segment
 	size     float64
+	family   string // non-empty: draw text as native <text> in this font-family; font/boldFont only measure
 }
+
+// fontVerdana is the badge font name that draws text as native SVG <text> in
+// shields.io's font stack instead of glyph paths, so a browser rasterizes it through
+// its text stack, as it does a shields.io badge. The badge geometry (height, padding,
+// baseline) stays kromgo's own. Only free fonts are bundled, so the layout is measured
+// with DejaVu Sans and textLength fits each text run to the measured width, whichever
+// font the viewer ends up with.
+const (
+	fontVerdana   = "verdana"
+	verdanaFamily = "Verdana,Geneva,DejaVu Sans,sans-serif"
+)
 
 // newBadgeRenderer parses the configured font and its bold companion and returns a renderer.
 func newBadgeRenderer(cfg config.BadgeDefaults) (*badgeRenderer, error) {
-	data, err := resolveBadgeFont(cfg.Font)
+	name, family := cfg.Font, ""
+	if name == fontVerdana {
+		name, family = "", verdanaFamily
+	}
+	data, err := resolveBadgeFont(name)
 	if err != nil {
 		return nil, fmt.Errorf("badge font: %w", err)
 	}
@@ -37,7 +55,7 @@ func newBadgeRenderer(cfg config.BadgeDefaults) (*badgeRenderer, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parsing badge font: %w", err)
 	}
-	boldData, err := resolveBadgeBoldFont(cfg.Font)
+	boldData, err := resolveBadgeBoldFont(name)
 	if err != nil {
 		return nil, fmt.Errorf("badge bold font: %w", err)
 	}
@@ -49,7 +67,7 @@ func newBadgeRenderer(cfg config.BadgeDefaults) (*badgeRenderer, error) {
 	if size <= 0 {
 		size = defaultBadgeFontSize
 	}
-	return &badgeRenderer{font: f, boldFont: bold, size: size}, nil
+	return &badgeRenderer{font: f, boldFont: bold, size: size, family: family}, nil
 }
 
 func ppemFor(size float64) fixed.Int26_6 { return fixed.Int26_6(size * 64) }
@@ -197,8 +215,8 @@ func (b *badgeRenderer) render(spec badgeSpec) []byte {
 
 	msgHex := colorNameToHex(spec.color)
 	labelHex := cmp.Or(spec.labelColor, labelBg)
-	// alt is the badge's accessible name. It's the one place untrusted label/message
-	// text becomes markup rather than path geometry, so it must be XML-escaped.
+	// alt is the badge's accessible name. Untrusted label/message text becomes markup
+	// here, so it must be XML-escaped.
 	alt := html.EscapeString(accessibleText(spec.label, spec.message))
 	// Namespace the gradient/clip ids by badge id: SVG id resolution is document-global,
 	// so two kromgo SVGs inlined in one HTML page would otherwise have the second's
@@ -240,9 +258,7 @@ func (b *badgeRenderer) render(spec badgeSpec) []byte {
 			iconX, (h-iconSize)/2, scale, iconColor, spec.iconPath)
 	}
 
-	// Text as vector paths from the font: exact widths, no system-font/textLength
-	// dependency, and untrusted text becomes geometry that can't inject markup. Each
-	// segment's text + drop shadow take a color legible on that segment's background.
+	// Each segment's text + drop shadow take a color legible on that segment's background.
 	bl := float64(baseline)
 	shadow := spec.style != config.StyleFlatSquare
 	if hasLabel {
@@ -278,10 +294,53 @@ func xmlIDSafe(s string) string {
 	}, s)
 }
 
-// writeText draws s as glyph paths (regular face, configured size) at (originX, baseline)
-// on a background of bgHex, optionally with a drop shadow. See emitTextPath.
+// writeText draws text (regular face, configured size) at (originX, baseline) on a
+// background of bgHex, optionally with a drop shadow: as glyph paths (emitTextPath),
+// or as native <text> for the verdana font (emitText).
 func (b *badgeRenderer) writeText(s *strings.Builder, text string, originX, baseline float64, bgHex string, shadow bool) {
+	if b.family != "" {
+		b.emitText(s, text, originX, baseline, b.size, b.measure(text), false, bgHex, shadow)
+		return
+	}
 	b.emitTextPath(s, b.glyphPath(text, originX, baseline), bgHex, shadow)
+}
+
+// writeForTheBadgeText draws a for-the-badge text run (10px, letter-spaced, no shadow)
+// at x on a background of bgHex, in the bold companion face when bold is set.
+func (b *badgeRenderer) writeForTheBadgeText(s *strings.Builder, text string, x float64, bold bool, bgHex string) {
+	f := b.font
+	if bold {
+		f = b.boldFont
+	}
+	if b.family != "" {
+		b.emitText(s, text, x, ftbBaseline, ftbFontSize, b.measureFace(f, text, ftbFontSize, ftbTracking), bold, bgHex, false)
+		return
+	}
+	b.emitTextPath(s, b.glyphPathFace(f, text, x, ftbBaseline, ftbFontSize, ftbTracking), bgHex, false)
+}
+
+// emitText writes text as native SVG <text> in b.family, left-aligned at (x, baseline)
+// with textLength pinning it to width, the width the layout measured for it. Colors and
+// the optional 1px drop shadow follow emitTextPath. text-rendering="geometricPrecision"
+// is what shields.io emits; without it Chrome draws the text visibly heavier than the
+// same shields.io badge. xml:space="preserve" keeps leading, trailing, and repeated
+// spaces, which SVG otherwise collapses although the layout measured them. The text is
+// untrusted (a CEL value or a metric label), so it is XML-escaped.
+func (b *badgeRenderer) emitText(s *strings.Builder, text string, x, baseline, size float64, width int, bold bool, bgHex string, shadow bool) {
+	if text == "" {
+		return
+	}
+	textColor, shadowColor := colorsForBackground(bgHex)
+	weight := ""
+	if bold {
+		weight = ` font-weight="bold"`
+	}
+	attrs := fmt.Sprintf(`font-family="%s" font-size="%g"%s text-rendering="geometricPrecision" textLength="%d" xml:space="preserve"`, b.family, size, weight, width)
+	esc := html.EscapeString(text)
+	if shadow {
+		fmt.Fprintf(s, `<text x="%g" y="%g" fill="%s" fill-opacity=".3" %s>%s</text>`, x, baseline+1, shadowColor, attrs, esc)
+	}
+	fmt.Fprintf(s, `<text x="%g" y="%g" fill="%s" %s>%s</text>`, x, baseline, textColor, attrs, esc)
 }
 
 // textStrokeWidth is the width (px) of the same-color stroke drawn around every glyph
@@ -323,7 +382,7 @@ const (
 
 // renderForTheBadge draws the shields-style "for-the-badge" variant. The segment layout
 // mirrors shields' forTheBadge() line-for-line: kromgo draws left-aligned, exact-width
-// glyph paths at each segment's text-inset x, spanning the same range shields produces
+// text at each segment's text-inset x, spanning the same range shields produces
 // with text-anchor=middle + textLength, so the width/position math ports directly. The
 // label uses the regular face; the message uses the bold companion (shields renders the
 // message bold). spec is never mutated, so the accessible label stays original-case.
@@ -401,9 +460,9 @@ func (b *badgeRenderer) renderForTheBadge(spec badgeSpec) []byte {
 			logoMinX, (ftbHeight-ftbIconSize)/2, scale, iconColor, spec.iconPath)
 	}
 	if hasLabel {
-		b.emitTextPath(&s, b.glyphPathFace(b.font, label, float64(labelTextMinX), ftbBaseline, ftbFontSize, ftbTracking), labelHex, false)
+		b.writeForTheBadgeText(&s, label, float64(labelTextMinX), false, labelHex)
 	}
-	b.emitTextPath(&s, b.glyphPathFace(b.boldFont, message, float64(msgTextMinX), ftbBaseline, ftbFontSize, ftbTracking), msgHex, false)
+	b.writeForTheBadgeText(&s, message, float64(msgTextMinX), true, msgHex)
 	s.WriteString(`</g></svg>`)
 	return []byte(s.String())
 }

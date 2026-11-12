@@ -95,7 +95,8 @@ type Defaults struct {
 // BadgeDefaults holds the default SVG badge rendering settings.
 type BadgeDefaults struct {
 	// Font selects the badge font: dejavu-sans (default, shields.io-style), dejavu-sans-bold,
-	// comic-neue, or comic-neue-bold.
+	// comic-neue, comic-neue-bold, or verdana (native SVG text in shields.io's font stack,
+	// rendered by the viewer's browser).
 	Font string `yaml:"font,omitempty" json:"font,omitempty"`
 	// Size is the font size in points (defaults to 11).
 	Size int `yaml:"size,omitempty" json:"size,omitempty"`

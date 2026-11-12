@@ -122,7 +122,7 @@ same-named field. All keys are optional.
 ```yaml
 defaults:
   badge:
-    font: dejavu-sans # dejavu-sans (default, shields.io-style), dejavu-sans-bold, comic-neue, comic-neue-bold
+    font: dejavu-sans # dejavu-sans (default, shields.io-style), dejavu-sans-bold, comic-neue, comic-neue-bold, verdana
     size: 11 # badge font size in points
     style: flat # flat (default), flat-square, plastic, or for-the-badge
     gallery:
@@ -426,6 +426,12 @@ kromgo's bundled palettes (an unknown value falls back to the default):
   Verdana that [shields.io](https://shields.io) renders with. Vendored from npm (`dejavu-fonts-ttf`).
 - **`comic-neue`** / **`comic-neue-bold`** — a free Comic Sans alternative (Google Fonts, via
   `@expo-google-fonts/comic-neue`), for when a badge wants some personality.
+- **`verdana`** (badges only): kromgo draws the text as native SVG `<text>` in the shields.io font
+  stack (`Verdana,Geneva,DejaVu Sans,sans-serif`), not as glyph paths. The browser of the viewer then
+  renders the text with the same fonts and text settings as a shields.io badge. The badge layout
+  (height, padding, and widths) stays the same as with the other fonts. kromgo measures the layout with
+  DejaVu Sans, and `textLength` fits each text run to that width. The exact glyphs depend on the fonts
+  that the viewer has installed.
 
 Both faces are compiled in by `cmd/genassets` (kept current by Renovate). Badges and graphs default to
 `dejavu-sans` (shields.io-style — 11 px text, 20 px tall); set `font:` to opt into the others. Fonts are
