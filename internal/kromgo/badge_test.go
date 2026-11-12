@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/xml"
 	"io"
+	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -202,6 +204,127 @@ func TestBadgeRender_TextShadow(t *testing.T) {
 			assert.NotContains(t, svg, `fill-opacity=".3" stroke=`, "shadow is not stroked")
 		})
 	}
+}
+
+// nativeTextRe matches one <text> run emitted for the verdana font.
+var nativeTextRe = regexp.MustCompile(`<text x="([\d.]+)" y="([\d.]+)" fill="(#[0-9a-f]+)"( fill-opacity="\.3")? ` +
+	`font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="(\d+)"( font-weight="bold")? ` +
+	`text-rendering="geometricPrecision" textLength="(\d+)" xml:space="preserve">([^<]*)</text>`)
+
+type nativeRun struct {
+	x, y         float64
+	fill         string
+	shadow, bold bool
+	size, width  int
+	text         string
+}
+
+// nativeRuns parses every <text> run in svg, failing if any run doesn't match nativeTextRe.
+func nativeRuns(t *testing.T, svg string) []nativeRun {
+	t.Helper()
+	matches := nativeTextRe.FindAllStringSubmatch(svg, -1)
+	runs := make([]nativeRun, 0, len(matches))
+	for _, m := range matches {
+		x, err := strconv.ParseFloat(m[1], 64)
+		require.NoError(t, err)
+		y, err := strconv.ParseFloat(m[2], 64)
+		require.NoError(t, err)
+		size, err := strconv.Atoi(m[5])
+		require.NoError(t, err)
+		width, err := strconv.Atoi(m[7])
+		require.NoError(t, err)
+		runs = append(runs, nativeRun{x: x, y: y, fill: m[3], shadow: m[4] != "", bold: m[6] != "", size: size, width: width, text: m[8]})
+	}
+	require.Equal(t, strings.Count(svg, "<text "), len(runs), "every <text> run parsed")
+	return runs
+}
+
+func TestBadgeRender_VerdanaNativeText(t *testing.T) {
+	t.Parallel()
+	native, err := newBadgeRenderer(config.BadgeDefaults{Font: fontVerdana})
+	require.NoError(t, err)
+	paths, err := newBadgeRenderer(config.BadgeDefaults{})
+	require.NoError(t, err)
+	labelRectRe := regexp.MustCompile(`<rect width="(\d+)" height="\d+" fill="#555"/>`)
+	msgRectRe := regexp.MustCompile(`<rect x="(\d+)" width="(\d+)" height="\d+" fill="#eeeeee"/>`)
+
+	cases := []struct {
+		style          string
+		shadow         bool
+		label, message string // the text as drawn
+		size           int
+		baseline       float64
+		pad            int  // text inset on each side of a segment
+		bold           bool // message weight
+	}{
+		{config.StyleFlat, true, "build", "passing", 11, 14, 6, false},
+		{config.StylePlastic, true, "build", "passing", 11, 14, 6, false},
+		{config.StyleFlatSquare, false, "build", "passing", 11, 14, 6, false},
+		{config.StyleForTheBadge, false, "BUILD", "PASSING", 10, 17.5, 12, true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.style, func(t *testing.T) {
+			t.Parallel()
+			// A light message background, so the label (always dark) and message
+			// segments take different text and shadow colors.
+			spec := badgeSpec{style: tc.style, label: "build", message: "passing", color: "#eeeeee", id: "s"}
+			svg := native.render(spec)
+			s := string(svg)
+			requireWellFormed(t, svg)
+
+			// Layout is measured with DejaVu Sans, so the badge geometry is the same as
+			// the glyph-path badge's.
+			pathSVG := string(paths.render(spec))
+			assert.Equal(t, pathSVG[:strings.Index(pathSVG, ">")], s[:strings.Index(s, ">")], "same <svg> size and viewBox")
+			assert.NotContains(t, s, "<path", "no glyph paths")
+
+			// Each run starts pad px into its segment and its textLength fills the
+			// segment up to pad px from the far edge.
+			lm := labelRectRe.FindStringSubmatch(s)
+			require.Len(t, lm, 2)
+			labelW, _ := strconv.Atoi(lm[1])
+			mm := msgRectRe.FindStringSubmatch(s)
+			require.Len(t, mm, 3)
+			msgX, _ := strconv.Atoi(mm[1])
+			msgW, _ := strconv.Atoi(mm[2])
+			label := nativeRun{x: float64(tc.pad), y: tc.baseline, fill: "#fff", size: tc.size, width: labelW - 2*tc.pad, text: tc.label}
+			msg := nativeRun{x: float64(msgX + tc.pad), y: tc.baseline, fill: "#333", bold: tc.bold, size: tc.size, width: msgW - 2*tc.pad, text: tc.message}
+
+			var fg, shadows []nativeRun
+			for _, r := range nativeRuns(t, s) {
+				if r.shadow {
+					shadows = append(shadows, r)
+				} else {
+					fg = append(fg, r)
+				}
+			}
+			assert.Equal(t, []nativeRun{label, msg}, fg)
+
+			if !tc.shadow {
+				assert.Empty(t, shadows)
+				return
+			}
+			shadowOf := func(r nativeRun, fill string) nativeRun {
+				r.y++
+				r.fill = fill
+				r.shadow = true
+				return r
+			}
+			assert.Equal(t, []nativeRun{shadowOf(label, "#010101"), shadowOf(msg, "#ccc")}, shadows, "1px drop shadow under each run")
+		})
+	}
+}
+
+func TestBadgeRender_VerdanaTextContent(t *testing.T) {
+	t.Parallel()
+	r, err := newBadgeRenderer(config.BadgeDefaults{Font: fontVerdana})
+	require.NoError(t, err)
+
+	// An empty label draws no run, and the spaces the layout measured are kept verbatim.
+	runs := nativeRuns(t, string(r.render(badgeSpec{style: config.StyleFlatSquare, message: "  a  b  ", color: "green"})))
+	require.Len(t, runs, 1)
+	assert.Equal(t, "  a  b  ", runs[0].text)
+	assert.Equal(t, r.measure("  a  b  "), runs[0].width)
 }
 
 func TestBadgeRender_LabelColor(t *testing.T) {

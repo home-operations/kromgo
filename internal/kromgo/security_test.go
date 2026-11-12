@@ -26,6 +26,15 @@ func TestSecurity_BadgeEscapesSVG(t *testing.T) {
 	// The payload also feeds the aria-label/<title>, where it must be XML-escaped
 	// rather than dropped — proving the escaping, not mere absence, protects us.
 	assert.Contains(t, body, "&lt;script&gt;", "payload survives, escaped, in the accessible label")
+
+	// The verdana font draws the text as native <text>, so there the payload is markup
+	// too and must be escaped inside the element.
+	native, err := newBadgeRenderer(config.BadgeDefaults{Font: fontVerdana})
+	require.NoError(t, err)
+	svg := native.render(badgeSpec{style: config.StyleFlat, label: "label", message: xssPayload, color: "green"})
+	requireWellFormed(t, svg)
+	assert.NotContains(t, string(svg), "<script>")
+	assert.Contains(t, string(svg), `">&lt;/text&gt;&lt;script&gt;alert(1)&lt;/script&gt;</text>`, "payload escaped as text content")
 }
 
 // Graph legend labels come from metric label values and must be escaped too.
