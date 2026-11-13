@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.5](https://github.com/home-operations/kromgo/compare/0.16.4...0.16.5) (2026-11-13)
+
+
+### Miscellaneous Chores
+
+* **mise:** update tool go (1.27.3 → 1.27.4) ([#505](https://github.com/home-operations/kromgo/issues/505)) ([d002b5e](https://github.com/home-operations/kromgo/commit/d002b5e8c32366be9fb9e21acf63c704dd5985ce))
+
 ## [0.16.4](https://github.com/home-operations/kromgo/compare/0.16.3...0.16.4) (2026-11-13)
 
 
