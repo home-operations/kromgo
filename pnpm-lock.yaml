@@ -24,8 +24,8 @@ importers:
         specifier: 18.2.1
         version: 18.2.1
       simple-icons:
-        specifier: 16.38.0
-        version: 16.38.0
+        specifier: 16.38.1
+        version: 16.38.1
 
 packages:
 
@@ -47,8 +47,8 @@ packages:
     engines: {node: '>= 20'}
     hasBin: true
 
-  simple-icons@16.38.0:
-    resolution: {integrity: sha512-B0Wws90eL0Fm65aH35CA8kM+7/Zzgsaytt0DndBx7VFm3+o9HurVIVRQZ1hvqqYYIyNJq7ycn3kQm2v2FhiWSQ==}
+  simple-icons@16.38.1:
+    resolution: {integrity: sha512-q4JnGp1cgeASp4jzEsmSh/7BD/e2y7aYO8XST+QBEvOJ5wzZ/9WRmKsI+QUwkfPUSiXC+sfh2+QetD38zl3N0g==}
     engines: {node: '>=0.12.18'}
 
 snapshots:
@@ -63,4 +63,4 @@ snapshots:
 
   marked@18.2.1: {}
 
-  simple-icons@16.38.0: {}
+  simple-icons@16.38.1: {}
